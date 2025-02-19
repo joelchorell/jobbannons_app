@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jobbannons Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h2>Jobbannons Generator</h2>
+
+    <label for="jobTitle">Välj jobbtitel:</label>
+    <select id="jobTitle">
+      <option value="Software Engineer">Software Engineer</option>
+      <option value="Projektledare">Projektledare</option>
+      <option value="Marknadsförare">Marknadsförare</option>
+      <option value="Eget">Ange egen titel...</option>
+    </select>
+    <input
+      type="text"
+      id="customTitle"
+      placeholder="Skriv egen titel"
+      style="display: none"
+    />
+
+    <p class="loading">Genererar förslag...</p>
+
+    <h3>Arbetsuppgifter</h3>
+    <div id="tasks"></div>
+    <input type="text" placeholder="Lägg till egen arbetsuppgift" />
+
+    <h3>Kvalifikationer</h3>
+    <div id="requirements"></div>
+    <input type="text" placeholder="Lägg till egen kvalifikation" />
+
+    <h3>Meriterande egenskaper</h3>
+    <div id="preferredSkills"></div>
+    <input type="text" placeholder="Lägg till egen meriterande egenskap" />
+
+    <h3>Om företaget</h3>
+    <div id="about"></div>
+    <input type="text" placeholder="Lägg till egen meriterande egenskap" />
+
+    <h3>Plats</h3>
+    <div id="location"></div>
+    <input type="text" placeholder="Lägg till egen meriterande egenskap" />
+
+    <h3>Anställningsform</h3>
+    <div id="employmentType"></div>
+    <input type="text" placeholder="Lägg till egen meriterande egenskap" />
+
+    <h3>Sista ansökningsdag</h3>
+    <div id="applyDay"></div>
+    <input type="text" placeholder="Lägg till egen meriterande egenskap" />
+
+    <h3>Kontaktinformation</h3>
+    <div id="contact"></div>
+    <input type="text" placeholder="Lägg till egen meriterande egenskap" />
+
+    <script src="script.js"></script>
+  </body>
+</html>

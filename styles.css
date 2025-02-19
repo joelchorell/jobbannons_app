@@ -1,0 +1,14 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 40px;
+}
+
+label {
+  display: block;
+  margin: 5px 0;
+}
+
+.loading {
+  display: none;
+  color: gray;
+}
