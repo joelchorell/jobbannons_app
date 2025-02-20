@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const jobTitleSelect = document.getElementById("jobTitle");
   const customTitleInput = document.getElementById("customTitle");
   const generateCustomBtn = document.getElementById("generateCustom");
+  const generateFinalBtn = document.getElementById("generateFinalButton");
   const loadingIndicator = document.querySelector(".loading");
   const errorMessage = document.getElementById("errorMessage");
   const containers = {
@@ -24,6 +25,9 @@ document.addEventListener("DOMContentLoaded", function () {
     "contact",
   ];
 
+  const generatedText = document.getElementById("generatedText");
+  const copyButton = document.getElementById("copyButton");
+
   function showError(message) {
     errorMessage.textContent = message;
     errorMessage.style.display = "block";
@@ -34,20 +38,20 @@ document.addEventListener("DOMContentLoaded", function () {
     errorMessage.style.display = "none";
   }
 
-  async function generateJobData(jobTitle) {
+  async function generateInitialData(jobTitle) {
     clearError();
     loadingIndicator.style.display = "block";
-
-    console.log("Sending request for job title:", jobTitle); // Debug log
+    generatedText.value = "";
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/generate-job-data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobTitle }),
-      });
-
-      console.log("Response status:", response.status); // Debug log
+      const response = await fetch(
+        "http://127.0.0.1:5000/generate-initial-data",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jobTitle }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -57,31 +61,69 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const data = await response.json();
-      console.log("Received data:", data); // Debug log
 
-      loadingIndicator.style.display = "none";
-
-      // Update containers with data
+      // Update containers with initial data
       Object.entries(data).forEach(([key, items]) => {
-        if (containers[key]) {
-          if (checkboxSections.includes(key)) {
-            // Sections that should have checkboxes
-            containers[key].innerHTML = items
-              .map(
-                (item) =>
-                  `<label><input type="checkbox" checked> ${item}</label>`
-              )
-              .join("");
-          } else if (textSections.includes(key)) {
-            // Sections that should only show text
-            containers[key].innerHTML = items
-              .map((item) => `<p>${item}</p>`)
-              .join("");
-          }
+        if (containers[key] && checkboxSections.includes(key)) {
+          containers[key].innerHTML = items
+            .map(
+              (item) => `<label><input type="checkbox" checked> ${item}</label>`
+            )
+            .join("");
         }
       });
+
+      loadingIndicator.style.display = "none";
     } catch (error) {
-      console.error("Error details:", error); // Debug log
+      console.error("Error details:", error);
+      showError(`Ett fel uppstod: ${error.message}`);
+    }
+  }
+
+  async function generateFinalListing() {
+    clearError();
+    loadingIndicator.style.display = "block";
+
+    try {
+      // Collect all data including user inputs
+      const data = {
+        tasks: Array.from(
+          containers.tasks.querySelectorAll("input:checked")
+        ).map((checkbox) => checkbox.parentElement.textContent.trim()),
+        requirements: Array.from(
+          containers.requirements.querySelectorAll("input:checked")
+        ).map((checkbox) => checkbox.parentElement.textContent.trim()),
+        preferredSkills: Array.from(
+          containers.preferredSkills.querySelectorAll("input:checked")
+        ).map((checkbox) => checkbox.parentElement.textContent.trim()),
+        about: [document.getElementById("aboutInput").value],
+        location: [document.getElementById("locationInput").value],
+        employmentType: [document.getElementById("employmentTypeInput").value],
+        applyDay: [document.getElementById("applyDayInput").value],
+        contact: [document.getElementById("contactInput").value],
+      };
+
+      const response = await fetch(
+        "http://127.0.0.1:5000/generate-final-listing",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          `Server error: ${errorData.error || response.statusText}`
+        );
+      }
+
+      const result = await response.json();
+      generatedText.value = result.listing;
+      loadingIndicator.style.display = "none";
+    } catch (error) {
+      console.error("Error details:", error);
       showError(`Ett fel uppstod: ${error.message}`);
     }
   }
@@ -93,22 +135,36 @@ document.addEventListener("DOMContentLoaded", function () {
       ".custom-title-container"
     );
 
-    // Show/hide the entire container
     customTitleContainer.classList.toggle("visible", showCustom);
     customTitleInput.style.display = showCustom ? "block" : "none";
     generateCustomBtn.style.display = showCustom ? "block" : "none";
 
     if (!showCustom) {
-      generateJobData(jobTitle);
+      generateInitialData(jobTitle);
     }
   });
 
   generateCustomBtn.addEventListener("click", function () {
     const customTitle = customTitleInput.value.trim();
     if (customTitle) {
-      generateJobData(customTitle);
+      generateInitialData(customTitle);
     } else {
       showError("Vänligen ange en egen titel");
+    }
+  });
+
+  generateFinalBtn.addEventListener("click", generateFinalListing);
+
+  copyButton.addEventListener("click", async function () {
+    try {
+      await navigator.clipboard.writeText(generatedText.value);
+      const originalText = this.textContent;
+      this.textContent = "Kopierat!";
+      setTimeout(() => {
+        this.textContent = originalText;
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy text:", err);
     }
   });
 });
