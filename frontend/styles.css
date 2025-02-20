@@ -1,0 +1,150 @@
+/* Base styles */
+body {
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 2.5rem auto;
+  padding: 0 1.25rem;
+}
+
+/* Form elements */
+form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.form-section {
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+select,
+input,
+button {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+/* Header and custom title section - full width */
+h2,
+.custom-title-container,
+#errorMessage {
+  grid-column: 1 / -1;
+}
+
+/* Title section styling */
+h2 {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 0 0 1.25rem 0;
+  text-align: center;
+}
+
+/* Layout components */
+.custom-title-container {
+  display: none; /* Hide by default */
+  gap: 0.625rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background-color: #f8f9fa;
+}
+
+/* When visible, make it full width */
+.custom-title-container.visible {
+  display: flex;
+}
+
+/* Status indicators */
+.loading,
+.error-message {
+  display: none;
+  margin: 0.625rem 0;
+  padding: 0.625rem;
+  border: 1px solid;
+  border-radius: 0.25rem;
+}
+
+.loading {
+  color: #666;
+  text-align: center;
+  border-color: #666;
+  background-color: #f8f9fa;
+}
+
+.error-message {
+  color: #dc3545;
+  border-color: #dc3545;
+  background-color: #fff;
+}
+
+/* Content sections */
+h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3125rem;
+  border-bottom: 1px solid #eee;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Form controls */
+label {
+  display: block;
+  margin-bottom: 0.3125rem;
+}
+
+input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* Checkbox container */
+div[id] {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+}
+
+/* Text sections */
+div[id] p {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background-color: #fff;
+  border-radius: 0.25rem;
+}
+
+/* Checkbox sections specific styling */
+#tasks label,
+#requirements label,
+#preferredSkills label {
+  display: block;
+  margin-bottom: 0.3125rem;
+  padding: 0.3125rem;
+}
+
+#tasks input[type="checkbox"],
+#requirements input[type="checkbox"],
+#preferredSkills input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  h2,
+  .custom-title-container,
+  #errorMessage {
+    grid-column: auto;
+  }
+}

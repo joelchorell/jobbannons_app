@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jobbannons Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <form id="jobForm">
+      <h2>Jobbannons Generator</h2>
+
+      <div class="form-section">
+        <label for="jobTitle">Välj jobbtitel:</label>
+        <select id="jobTitle" required>
+          <option value="">Välj en titel...</option>
+          <option value="Software Engineer">Software Engineer</option>
+          <option value="Projektledare">Projektledare</option>
+          <option value="Marknadsförare">Marknadsförare</option>
+          <option value="Eget">Ange egen titel...</option>
+        </select>
+      </div>
+
+      <div class="custom-title-container">
+        <input
+          type="text"
+          id="customTitle"
+          placeholder="Skriv egen titel"
+          style="display: none"
+        />
+        <button type="button" id="generateCustom" style="display: none">
+          Generera
+        </button>
+      </div>
+
+      <div id="errorMessage" class="error-message"></div>
+      <p class="loading">Genererar förslag...</p>
+
+      <div class="form-section">
+        <h3>Arbetsuppgifter</h3>
+        <div id="tasks"></div>
+        <input type="text" placeholder="Lägg till egen arbetsuppgift" />
+      </div>
+
+      <div class="form-section">
+        <h3>Kvalifikationer</h3>
+        <div id="requirements"></div>
+        <input type="text" placeholder="Lägg till egen kvalifikation" />
+      </div>
+
+      <div class="form-section">
+        <h3>Meriterande egenskaper</h3>
+        <div id="preferredSkills"></div>
+        <input type="text" placeholder="Lägg till egen meriterande egenskap" />
+      </div>
+
+      <div class="form-section">
+        <h3>Om företaget</h3>
+        <div id="about"></div>
+        <input
+          type="text"
+          id="aboutInput"
+          placeholder="Lägg till information om företaget"
+        />
+      </div>
+
+      <div class="form-section">
+        <h3>Plats</h3>
+        <div id="location"></div>
+        <input
+          type="text"
+          id="locationInput"
+          placeholder="Lägg till platsinfo"
+        />
+      </div>
+
+      <div class="form-section">
+        <h3>Anställningsform</h3>
+        <div id="employmentType"></div>
+        <input
+          type="text"
+          id="employmentTypeInput"
+          placeholder="Lägg till anställningsform"
+        />
+      </div>
+
+      <div class="form-section">
+        <h3>Sista ansökningsdag</h3>
+        <div id="applyDay"></div>
+        <input
+          type="text"
+          id="applyDayInput"
+          placeholder="Lägg till sista ansökningsdag"
+        />
+      </div>
+
+      <div class="form-section">
+        <h3>Kontaktinformation</h3>
+        <div id="contact"></div>
+        <input
+          type="text"
+          id="contactInput"
+          placeholder="Lägg till kontaktinformation"
+        />
+      </div>
+    </form>
+
+    <script src="script.js"></script>
+  </body>
+</html>
