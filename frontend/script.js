@@ -1,3 +1,8 @@
+function autoExpandTextarea(element) {
+  element.style.height = "auto";
+  element.style.height = element.scrollHeight + "px";
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const jobTitleSelect = document.getElementById("jobTitle");
   const customTitleInput = document.getElementById("customTitle");
@@ -65,11 +70,17 @@ document.addEventListener("DOMContentLoaded", function () {
       // Update containers with initial data
       Object.entries(data).forEach(([key, items]) => {
         if (containers[key] && checkboxSections.includes(key)) {
-          containers[key].innerHTML = items
-            .map(
-              (item) => `<label><input type="checkbox" checked> ${item}</label>`
-            )
-            .join("");
+          if (items && items.length > 0) {
+            containers[key].innerHTML = items
+              .map(
+                (item) =>
+                  `<label><input type="checkbox" checked> ${item}</label>`
+              )
+              .join("");
+            containers[key].style.display = "block"; // Show container when it has content
+          } else {
+            containers[key].style.display = "none"; // Hide if empty
+          }
         }
       });
 
@@ -82,7 +93,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function generateFinalListing() {
     clearError();
-    loadingIndicator.style.display = "block";
+    // Show loading animation on the button
+    generateFinalBtn.textContent = "Genererar...";
+    generateFinalBtn.style.animation =
+      "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite";
+    generateFinalBtn.disabled = true;
 
     try {
       // Collect all data including user inputs
@@ -121,10 +136,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const result = await response.json();
       generatedText.value = result.listing;
-      loadingIndicator.style.display = "none";
+
+      // Auto-adjust height of generated text area
+      generatedText.style.height = "auto";
+      generatedText.style.height = generatedText.scrollHeight + 5 + "px";
     } catch (error) {
       console.error("Error details:", error);
       showError(`Ett fel uppstod: ${error.message}`);
+    } finally {
+      // Reset button state
+      generateFinalBtn.textContent = "Generera Annons";
+      generateFinalBtn.style.animation = "";
+      generateFinalBtn.disabled = false;
     }
   }
 
@@ -166,5 +189,15 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (err) {
       console.error("Failed to copy text:", err);
     }
+  });
+
+  // Add auto-expand to all textareas
+  document.querySelectorAll("textarea").forEach((textarea) => {
+    textarea.addEventListener("input", function () {
+      autoExpandTextarea(this);
+    });
+
+    // Initial call to set correct height
+    autoExpandTextarea(textarea);
   });
 });

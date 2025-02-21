@@ -1,34 +1,215 @@
 /* Base styles */
+:root {
+  --primary-color: #6366f1;
+  --primary-hover: #4f46e5;
+  --gradient-start: #1f1c2c;
+  --gradient-end: #928dab;
+  --bg-color: #f8fafc;
+  --border-radius: 0.75rem;
+  --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --transition: all 0.3s ease;
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   max-width: 1200px;
   margin: 2.5rem auto;
   padding: 0 1.25rem;
+  background: linear-gradient(
+    135deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  color: #1e293b;
+  min-height: 100vh; /* Ensure gradient covers full viewport height */
 }
 
 /* Form elements */
 form {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .form-section {
   margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+  background-color: white;
+  box-shadow: var(--box-shadow);
+  box-sizing: border-box;
 }
 
 select,
 input,
+textarea,
 button {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
   width: 100%;
+  box-sizing: border-box;
+  transition: var(--transition);
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Style textareas */
+textarea {
+  min-height: 2.5rem;
+  height: auto;
+  resize: none;
+  overflow: hidden;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: var(--transition);
+}
+
+/* Title section styling */
+h2 {
+  background-color: rgba(255, 255, 255, 0.5); /* White with 50% transparency */
+  color: #1e293b; /* Darker text color for better readability */
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+  box-shadow: var(--box-shadow);
+  backdrop-filter: blur(
+    5px
+  ); /* Optional: adds a slight blur effect to the background */
+}
+
+/* Content sections */
+h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 1.1rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.75rem;
+  accent-color: var(--primary-color);
+}
+
+/* Button styling */
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+#generateFinalButton {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-hover)
+  );
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+#copyButton {
+  background-color: #10b981;
+  margin-top: 1rem;
+}
+
+#copyButton:hover {
+  background-color: #059669;
+}
+
+/* Status indicators */
+.loading,
+.error-message {
+  display: none;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  font-weight: 500;
+}
+
+.loading {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Generated text area */
+#generatedText {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 200px;
+  height: auto;
+  overflow: auto; /* Changed from hidden to auto */
+  transition: height 0.3s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  .form-section {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Animation for loading state */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--primary-hover)
+    );
+  }
+  50% {
+    opacity: 0.7;
+    background: linear-gradient(
+      135deg,
+      var(--primary-hover),
+      var(--primary-color)
+    );
+  }
+}
+
+.loading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Header and custom title section - full width */
@@ -36,15 +217,6 @@ h2,
 .custom-title-container,
 #errorMessage {
   grid-column: 1 / -1;
-}
-
-/* Title section styling */
-h2 {
-  background-color: #f8f9fa;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin: 0 0 1.25rem 0;
-  text-align: center;
 }
 
 /* Layout components */
@@ -62,47 +234,10 @@ h2 {
   display: flex;
 }
 
-/* Status indicators */
-.loading,
-.error-message {
-  display: none;
-  margin: 0.625rem 0;
-  padding: 0.625rem;
-  border: 1px solid;
-  border-radius: 0.25rem;
-}
-
-.loading {
-  color: #666;
-  text-align: center;
-  border-color: #666;
-  background-color: #f8f9fa;
-}
-
-.error-message {
-  color: #dc3545;
-  border-color: #dc3545;
-  background-color: #fff;
-}
-
-/* Content sections */
-h3 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.3125rem;
-  border-bottom: 1px solid #eee;
-  font-size: 1rem;
-  color: #333;
-}
-
 /* Form controls */
 label {
   display: block;
   margin-bottom: 0.3125rem;
-}
-
-input[type="checkbox"] {
-  margin-right: 0.5rem;
 }
 
 /* Checkbox container */
@@ -111,6 +246,12 @@ div[id] {
   padding: 0.5rem;
   background-color: #f8f9fa;
   border-radius: 0.25rem;
+  display: none; /* Hide by default */
+}
+
+/* Show the container when it has content */
+div[id]:not(:empty) {
+  display: block;
 }
 
 /* Text sections */
@@ -136,45 +277,18 @@ div[id] p {
   margin-right: 0.5rem;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  form {
-    grid-template-columns: 1fr;
-  }
-
-  h2,
-  .custom-title-container,
-  #errorMessage {
-    grid-column: auto;
-  }
-}
-
 /* Add these new styles */
 .full-width {
   grid-column: 1 / -1; /* Make the section span full width */
 }
 
+/* Keep vertical resize for the final generated text area */
 #generatedText {
-  width: 100%;
-  min-height: 200px;
-  padding: 1rem;
-  margin: 1rem 0;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
   resize: vertical;
-  font-family: inherit;
-  line-height: 1.5;
 }
 
-#copyButton {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-#copyButton:hover {
-  background-color: #45a049;
+/* Add disabled button style */
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
