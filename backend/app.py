@@ -50,39 +50,40 @@ def generate_initial_data(job_title):
 def generate_final_listing(data):
     try:
         prompt = f"""
-        Skapa en trevlig och säljande jobbannons baserad på följande grundläggande information som du sedan utvecklar enligt populära trender:
+        Du är en kreativ och professionell rekryterare. Skapa en engagerande jobbannons baserad på följande information:
 
-        Arbetsuppgifter:
-        {json.dumps(data['tasks'], indent=2, ensure_ascii=False)}
+        Här är informationen om tjänsten:
+        - Arbetsuppgifter: {', '.join(data['tasks'])}
+        - Kvalifikationer: {', '.join(data['requirements'])}
+        - Meriterande egenskaper: {', '.join(data['preferredSkills'])}
+        - Om företaget: {data['about'][0]}
+        - Plats: {data['location'][0]}
+        - Anställningsform: {data['employmentType'][0]}
+        - Sista ansökningsdag: {data['applyDay'][0]}
+        - Kontakt: {data['contact'][0]}
+        - Extra information: {data['extraInfo'][0]}
 
-        Kvalifikationer:
-        {json.dumps(data['requirements'], indent=2, ensure_ascii=False)}
-
-        Meriterande egenskaper:
-        {json.dumps(data['preferredSkills'], indent=2, ensure_ascii=False)}
-
-        Om företaget:
-        {json.dumps(data['about'], indent=2, ensure_ascii=False)}
-
-        Plats: {data['location'][0]}
-        Anställningsform: {data['employmentType'][0]}
-        Sista ansökningsdag: {data['applyDay'][0]}
-        Kontakt: {data['contact'][0]}
-
-        Formatera annonsen professionellt och strukturerat.
+        Skriv en kreativ och säljande jobbannons som får potentiella kandidater att vilja söka tjänsten. 
+        Var personlig i tonen och använd ett modernt språk. Strukturera texten på ett lättläst sätt.
+        Använd gärna markdown för att göra rubriker i fetstil med **.
         """
+        
+        print("Sending prompt to OpenAI:", prompt)
         
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "Du är en professionell rekryterare som skapar välstrukturerade jobbannonser."},
+                {"role": "system", "content": "Du är en modern rekryterare som skriver engagerande och personliga jobbannonser."},
                 {"role": "user", "content": prompt}
             ]
         )
         
-        return {"listing": response.choices[0].message.content}
+        content = response.choices[0].message.content
+        result = {"listing": content}
+        return result
 
     except Exception as e:
+        print(f"Error in generate_final_listing: {str(e)}")
         raise Exception(f"Error generating final listing: {str(e)}")
 
 @app.route('/generate-initial-data', methods=['POST'])
@@ -106,6 +107,41 @@ def get_final_listing():
         data = request.json
         final_listing = generate_final_listing(data)
         return jsonify(final_listing)
+        
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/regenerate-style', methods=['POST'])
+def regenerate_style():
+    try:
+        data = request.json
+        current_text = data.get("currentText")
+        style = data.get("style")
+        
+        style_prompts = {
+            "professional": "Omformulera denna jobbannons till en mer professionell och formell ton, men behåll all väsentlig information:",
+            "joyful": "Omformulera denna jobbannons till en mer lättsam och personlig ton, men behåll all väsentlig information:",
+            "concise": "Omformulera denna jobbannons till en mer koncis version, fokusera på det viktigaste och ta bort överflödiga ord:"
+        }
+        
+        prompt = f"""
+        {style_prompts[style]}
+
+        {current_text}
+        
+        Behåll markdown-formatering med ** för rubriker.
+        """
+        
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "Du är en skicklig rekryterare som kan anpassa tonen i jobbannonser."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        
+        return {"listing": response.choices[0].message.content}
         
     except Exception as e:
         print(f"Error occurred: {str(e)}")

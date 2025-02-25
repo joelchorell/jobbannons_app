@@ -1,55 +1,198 @@
-/* Base styles */
+/* Base styles - matching landing page */
 :root {
   --primary-color: #6366f1;
   --primary-hover: #4f46e5;
   --gradient-start: #1f1c2c;
   --gradient-end: #928dab;
-  --bg-color: #f8fafc;
+  --text-color: #1e293b;
+  --text-light: #64748b;
+  --bg-light: #f8fafc;
+  --border-color: #e2e8f0;
   --border-radius: 0.75rem;
-  --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   font-family: "Inter", system-ui, sans-serif;
-  max-width: 1200px;
-  margin: 2.5rem auto;
-  padding: 0 1.25rem;
+  color: var(--text-color);
+  line-height: 1.6;
   background: linear-gradient(
     135deg,
     var(--gradient-start),
     var(--gradient-end)
   );
-  color: #1e293b;
-  min-height: 100vh; /* Ensure gradient covers full viewport height */
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Header */
+header {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+nav ul {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+nav a {
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+nav a:hover {
+  color: var(--primary-color);
+}
+
+.nav-link {
+  color: var(--text-color);
+}
+
+.cta-button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: var(--transition);
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.cta-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.cta-button.secondary {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.cta-button.secondary:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
+.cta-button.large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* App Container */
+.app-container {
+  max-width: 1200px;
+  margin: 1rem auto;
+  padding: 0 1.25rem;
 }
 
 /* Form elements */
-form {
+#jobForm {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+  box-shadow: var(--box-shadow);
+}
+
+#jobForm h2 {
+  color: var(--text-color);
+  text-align: center;
+  margin-bottom: 0.25rem;
+  font-size: 2rem;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-light);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.form-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
 }
 
 .form-section {
-  margin-bottom: 1rem;
-  border: 1px solid #e2e8f0;
+  background-color: var(--bg-light);
   border-radius: var(--border-radius);
-  padding: 1.25rem;
-  background-color: white;
+  padding: 0.75rem;
   box-shadow: var(--box-shadow);
-  box-sizing: border-box;
+  margin-bottom: 0;
+}
+
+.form-section h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.25rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-color);
 }
 
 select,
 input,
-textarea,
-button {
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.5rem;
+textarea {
   width: 100%;
-  box-sizing: border-box;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  background-color: white;
   transition: var(--transition);
 }
 
@@ -61,234 +204,245 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-/* Style textareas */
 textarea {
-  min-height: 2.5rem;
-  height: auto;
+  min-height: 1.75rem;
   resize: none;
   overflow: hidden;
-  font-family: inherit;
-  line-height: 1.5;
-  transition: var(--transition);
-}
-
-/* Title section styling */
-h2 {
-  background-color: rgba(255, 255, 255, 0.5); /* White with 50% transparency */
-  color: #1e293b; /* Darker text color for better readability */
-  padding: 1.5rem;
-  border-radius: var(--border-radius);
-  margin: 0 0 1.5rem 0;
-  text-align: center;
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(
-    5px
-  ); /* Optional: adds a slight blur effect to the background */
-}
-
-/* Content sections */
-h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e2e8f0;
-  font-size: 1.1rem;
-  color: #334155;
-  font-weight: 600;
 }
 
 /* Checkbox styling */
+.checkbox-container {
+  padding: 0.25rem;
+  margin-bottom: 0.5rem;
+  max-height: 120px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 0.5rem;
+}
+
+.checkbox-container label {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  margin-bottom: 0.125rem;
+  border-radius: 0.25rem;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.checkbox-container label:hover {
+  background-color: rgba(99, 102, 241, 0.05);
+}
+
 input[type="checkbox"] {
   width: auto;
   margin-right: 0.75rem;
   accent-color: var(--primary-color);
 }
 
-/* Button styling */
-button {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
+/* Custom title container */
+.custom-title-container {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  grid-column: 1 / -1;
 }
 
-button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-1px);
+.custom-title-container.visible {
+  display: flex;
 }
 
-#generateFinalButton {
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--primary-hover)
-  );
+/* Loading and error states */
+.loading-container {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.loading {
+  display: none;
+  background-color: #dbeafe;
+  color: #1e40af;
   padding: 1rem;
-  font-size: 1.1rem;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.error-message {
+  display: none;
+  grid-column: 1 / -1;
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+/* Full width elements */
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Generated content */
+.generated-content {
+  display: none;
+}
+
+.generated-content.visible {
+  display: block;
+}
+
+.formatted-text {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  min-height: 200px;
+  margin-bottom: 1.5rem;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.formatted-text strong {
   font-weight: 600;
 }
 
+.hidden {
+  position: absolute;
+  left: -9999px;
+}
+
+/* Style buttons */
+.style-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.style-buttons button {
+  flex: 1;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.style-buttons button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.style-buttons .emoji {
+  font-size: 1.5rem;
+}
+
+.style-buttons .button-text {
+  font-size: 0.9rem;
+}
+
+/* Copy button */
 #copyButton {
   background-color: #10b981;
-  margin-top: 1rem;
+  width: 100%;
 }
 
 #copyButton:hover {
   background-color: #059669;
 }
 
-/* Status indicators */
-.loading,
-.error-message {
-  display: none;
-  margin: 1rem 0;
-  padding: 1rem;
-  border-radius: var(--border-radius);
-  text-align: center;
-  font-weight: 500;
-}
-
-.loading {
-  background-color: #dbeafe;
-  color: #1e40af;
-  border: 1px solid #bfdbfe;
-}
-
-.error-message {
-  background-color: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-}
-
-/* Generated text area */
-#generatedText {
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 1.25rem;
-  font-size: 1rem;
-  line-height: 1.6;
-  resize: vertical;
-  min-height: 200px;
-  height: auto;
-  overflow: auto; /* Changed from hidden to auto */
-  transition: height 0.3s ease;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  form {
-    grid-template-columns: 1fr;
-  }
-
-  .form-section {
-    margin-bottom: 1rem;
-  }
-}
-
-/* Animation for loading state */
+/* Animation */
 @keyframes pulse {
   0%,
   100% {
     opacity: 1;
-    background: linear-gradient(
-      135deg,
-      var(--primary-color),
-      var(--primary-hover)
-    );
   }
   50% {
     opacity: 0.7;
-    background: linear-gradient(
-      135deg,
-      var(--primary-hover),
-      var(--primary-color)
-    );
   }
 }
 
-.loading {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Header and custom title section - full width */
-h2,
-.custom-title-container,
-#errorMessage {
-  grid-column: 1 / -1;
-}
-
-/* Layout components */
-.custom-title-container {
-  display: none; /* Hide by default */
-  gap: 0.625rem;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  background-color: #f8f9fa;
-}
-
-/* When visible, make it full width */
-.custom-title-container.visible {
-  display: flex;
-}
-
-/* Form controls */
-label {
-  display: block;
-  margin-bottom: 0.3125rem;
-}
-
-/* Checkbox container */
-div[id] {
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  background-color: #f8f9fa;
-  border-radius: 0.25rem;
-  display: none; /* Hide by default */
-}
-
-/* Show the container when it has content */
-div[id]:not(:empty) {
-  display: block;
-}
-
-/* Text sections */
-div[id] p {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  background-color: #fff;
-  border-radius: 0.25rem;
-}
-
-/* Checkbox sections specific styling */
-#tasks label,
-#requirements label,
-#preferredSkills label {
-  display: block;
-  margin-bottom: 0.3125rem;
-  padding: 0.3125rem;
-}
-
-#tasks input[type="checkbox"],
-#requirements input[type="checkbox"],
-#preferredSkills input[type="checkbox"] {
-  margin-right: 0.5rem;
-}
-
-/* Add these new styles */
-.full-width {
-  grid-column: 1 / -1; /* Make the section span full width */
-}
-
-/* Keep vertical resize for the final generated text area */
-#generatedText {
-  resize: vertical;
-}
-
-/* Add disabled button style */
+/* Disabled button */
 button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* Footer */
+footer {
+  background-color: white;
+  padding: 2rem 0 1rem;
+  margin-top: 2rem;
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+}
+
+.footer-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+}
+
+.footer-column h4 {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.footer-column ul li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-column a {
+  color: var(--text-light);
+  transition: var(--transition);
+}
+
+.footer-column a:hover {
+  color: var(--primary-color);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-light);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  nav ul {
+    gap: 1rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    gap: 2rem;
+  }
 }

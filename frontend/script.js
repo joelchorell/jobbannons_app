@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     employmentType: document.getElementById("employmentType"),
     applyDay: document.getElementById("applyDay"),
     contact: document.getElementById("contact"),
+    extraInfo: document.getElementById("extraInfo"),
   };
 
   const checkboxSections = ["tasks", "requirements", "preferredSkills"];
@@ -32,6 +33,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const generatedText = document.getElementById("generatedText");
   const copyButton = document.getElementById("copyButton");
+
+  const professionalBtn = document.getElementById("professionalBtn");
+  const joyfulBtn = document.getElementById("joyfulBtn");
+  const conciseBtn = document.getElementById("conciseBtn");
 
   function showError(message) {
     errorMessage.textContent = message;
@@ -93,14 +98,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function generateFinalListing() {
     clearError();
-    // Show loading animation on the button
     generateFinalBtn.textContent = "Genererar...";
     generateFinalBtn.style.animation =
       "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite";
     generateFinalBtn.disabled = true;
 
     try {
-      // Collect all data including user inputs
       const data = {
         tasks: Array.from(
           containers.tasks.querySelectorAll("input:checked")
@@ -116,6 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
         employmentType: [document.getElementById("employmentTypeInput").value],
         applyDay: [document.getElementById("applyDayInput").value],
         contact: [document.getElementById("contactInput").value],
+        extraInfo: [document.getElementById("extraInfoInput").value],
       };
 
       const response = await fetch(
@@ -135,19 +139,59 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const result = await response.json();
-      generatedText.value = result.listing;
 
-      // Auto-adjust height of generated text area
-      generatedText.style.height = "auto";
-      generatedText.style.height = generatedText.scrollHeight + 5 + "px";
+      if (result.listing) {
+        // Store plain text in hidden textarea for copying
+        generatedText.value = result.listing;
+
+        // Show formatted text in the div
+        const formattedText = document.getElementById("formattedText");
+        formattedText.innerHTML = markdownToHtml(result.listing);
+
+        // Show the generated content section
+        document.querySelector(".generated-content").classList.add("visible");
+      } else {
+        throw new Error("No listing content in response");
+      }
     } catch (error) {
       console.error("Error details:", error);
       showError(`Ett fel uppstod: ${error.message}`);
     } finally {
-      // Reset button state
       generateFinalBtn.textContent = "Generera Annons";
       generateFinalBtn.style.animation = "";
       generateFinalBtn.disabled = false;
+    }
+  }
+
+  async function regenerateWithStyle(style) {
+    try {
+      const currentText = generatedText.value;
+
+      const response = await fetch("http://127.0.0.1:5000/regenerate-style", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentText,
+          style,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          `Server error: ${errorData.error || response.statusText}`
+        );
+      }
+
+      const result = await response.json();
+      if (result.listing) {
+        generatedText.value = result.listing;
+        const formattedText = document.getElementById("formattedText");
+        formattedText.innerHTML = markdownToHtml(result.listing);
+      }
+    } catch (error) {
+      console.error("Error details:", error);
+      showError(`Ett fel uppstod: ${error.message}`);
     }
   }
 
@@ -191,6 +235,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  professionalBtn.addEventListener("click", () =>
+    regenerateWithStyle("professional")
+  );
+  joyfulBtn.addEventListener("click", () => regenerateWithStyle("joyful"));
+  conciseBtn.addEventListener("click", () => regenerateWithStyle("concise"));
+
   // Add auto-expand to all textareas
   document.querySelectorAll("textarea").forEach((textarea) => {
     textarea.addEventListener("input", function () {
@@ -201,3 +251,8 @@ document.addEventListener("DOMContentLoaded", function () {
     autoExpandTextarea(textarea);
   });
 });
+
+// Add this function to convert markdown to HTML
+function markdownToHtml(text) {
+  return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+}
