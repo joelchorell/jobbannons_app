@@ -92,7 +92,7 @@ nav a:hover {
 .cta-button {
   background-color: var(--primary-color);
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 500;
   transition: var(--transition);
@@ -104,8 +104,8 @@ nav a:hover {
 }
 
 .cta-button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
+  background-color: var(--primary-color);
+  transform: none;
 }
 
 .cta-button.secondary {
@@ -115,65 +115,66 @@ nav a:hover {
 }
 
 .cta-button.secondary:hover {
-  background-color: rgba(99, 102, 241, 0.1);
+  background-color: transparent;
+  transform: none;
 }
 
 .cta-button.large {
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   font-size: 1.1rem;
 }
 
 /* App Container */
 .app-container {
   max-width: 1200px;
-  margin: 1rem auto;
+  margin: 2rem auto;
   padding: 0 1.25rem;
 }
 
 /* Form elements */
 #jobForm {
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
   border-radius: var(--border-radius);
-  padding: 1.25rem;
+  padding: 2rem;
   box-shadow: var(--box-shadow);
 }
 
 #jobForm h2 {
   color: var(--text-color);
   text-align: center;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
   font-size: 2rem;
 }
 
 .subtitle {
   text-align: center;
   color: var(--text-light);
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  margin-bottom: 2rem;
 }
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
 .form-section {
-  background-color: var(--bg-light);
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
   border-radius: var(--border-radius);
-  padding: 0.75rem;
+  padding: 1.5rem;
   box-shadow: var(--box-shadow);
-  margin-bottom: 0;
 }
 
 .form-section h3 {
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   color: var(--text-color);
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-weight: 600;
   border-bottom: 2px solid var(--border-color);
-  padding-bottom: 0.25rem;
+  padding-bottom: 0.5rem;
 }
 
 label {
@@ -187,7 +188,7 @@ select,
 input,
 textarea {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.75rem;
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   font-family: inherit;
@@ -205,16 +206,22 @@ textarea:focus {
 }
 
 textarea {
-  min-height: 1.75rem;
+  min-height: 3.5rem;
+  padding: 0.75rem;
+  line-height: 1.5;
+  font-size: 0.95rem;
   resize: none;
   overflow: hidden;
+  background-color: white;
 }
 
 /* Checkbox styling */
 .checkbox-container {
-  padding: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
   margin-bottom: 0.5rem;
-  max-height: 120px;
+  max-height: 150px;
   overflow-y: auto;
   background-color: white;
   border-radius: 0.5rem;
@@ -223,11 +230,10 @@ textarea {
 .checkbox-container label {
   display: flex;
   align-items: center;
-  padding: 0.25rem;
-  margin-bottom: 0.125rem;
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
   border-radius: 0.25rem;
   transition: var(--transition);
-  font-size: 0.9rem;
 }
 
 .checkbox-container label:hover {
@@ -242,10 +248,21 @@ input[type="checkbox"] {
 
 /* Custom title container */
 .custom-title-container {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 1.5rem;
   display: flex;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  grid-column: 1 / -1;
+  align-items: center;
+}
+
+.custom-title-container input {
+  flex-grow: 1;
+  padding: 0.75rem 1rem;
+  background-color: white;
 }
 
 .custom-title-container.visible {
@@ -287,6 +304,12 @@ input[type="checkbox"] {
 /* Generated content */
 .generated-content {
   display: none;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .generated-content.visible {
@@ -336,8 +359,8 @@ input[type="checkbox"] {
 }
 
 .style-buttons button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
+  background-color: var(--primary-color);
+  transform: none;
 }
 
 .style-buttons .emoji {
@@ -355,7 +378,7 @@ input[type="checkbox"] {
 }
 
 #copyButton:hover {
-  background-color: #059669;
+  background-color: #10b981;
 }
 
 /* Animation */
@@ -378,8 +401,8 @@ button:disabled {
 /* Footer */
 footer {
   background-color: white;
-  padding: 2rem 0 1rem;
-  margin-top: 2rem;
+  padding: 5rem 0 2rem;
+  margin-top: 4rem;
 }
 
 .footer-content {
@@ -445,4 +468,537 @@ footer {
     flex-direction: column;
     gap: 2rem;
   }
+}
+
+/* Add these styles for the sidebar layout */
+.sidebar-layout {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  height: auto;
+  min-height: 500px;
+}
+
+.sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.sidebar-item:hover:not(.active) {
+  background-color: transparent;
+}
+
+.sidebar-item.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.sidebar-icon {
+  font-size: 1.25rem;
+}
+
+.sidebar-text {
+  font-weight: 500;
+}
+
+.content-area {
+  flex-grow: 1;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1.25rem;
+  position: relative;
+}
+
+.content-section {
+  display: none;
+}
+
+.content-section.active {
+  display: block;
+}
+
+.content-section h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.content-section h3:first-child {
+  margin-top: 0;
+}
+
+/* Adjust the generate button in sidebar */
+.sidebar .cta-button {
+  margin-top: auto;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Adjust the generated content section */
+.generated-content {
+  display: none;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.generated-content.visible {
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+}
+
+/* Styled select container */
+.styled-select {
+  position: relative;
+  width: 100%;
+}
+
+/* Hide default arrow */
+.styled-select select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 3rem;
+  width: 100%;
+}
+
+/* For IE10+ */
+.styled-select select::-ms-expand {
+  display: none;
+}
+
+/* Make the select arrow bigger and more prominent */
+.select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  pointer-events: none;
+  font-size: 1.2rem;
+  background-color: white;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+/* Success message styling */
+.success-message {
+  display: none;
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid #10b981;
+  color: #065f46;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin: 1rem 0;
+  animation: fadeIn 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.success-message.visible {
+  display: flex;
+}
+
+.success-icon {
+  background-color: #10b981;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.success-text {
+  flex-grow: 1;
+}
+
+.success-text p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.next-step {
+  font-size: 0.9rem;
+  margin-top: 0.25rem !important;
+  color: #059669;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Add styles for the reset button */
+.content-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.reset-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.reset-button:hover {
+  background-color: transparent;
+  color: var(--text-light);
+}
+
+.reset-icon {
+  font-size: 1.1rem;
+}
+
+/* Modify the success message to be more prominent */
+.success-message {
+  display: none;
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid #10b981;
+  color: #065f46;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  margin: 1rem 0;
+  animation: fadeIn 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Hide input fields when suggestions are generated */
+.suggestions-generated .styled-select,
+.suggestions-generated .divider,
+.suggestions-generated h3:not(:first-child),
+.suggestions-generated .section-description,
+.suggestions-generated .custom-title-container {
+  display: none;
+}
+
+.suggestions-generated .success-message {
+  margin-top: 2rem;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(3px);
+  display: none;
+}
+
+.loading-overlay.visible {
+  display: flex;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid var(--primary-color);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  animation: spinner 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.loading-text {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Make content-area position relative for absolute positioning of overlay */
+.content-area {
+  position: relative;
+}
+
+/* Divider with text */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--text-light);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.divider span {
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Make button text responsive */
+@media (max-width: 1024px) {
+  .sidebar .cta-button {
+    font-size: 0.85rem;
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+/* Create a specific class for the sidebar button */
+.sidebar-button {
+  margin-top: auto;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Generate button container - more specific styling */
+.generate-button-container {
+  text-align: center;
+  margin: 2rem auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  clear: both;
+}
+
+.generate-button-container .cta-button {
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 250px;
+  background-color: #10b981;
+}
+
+.generate-button-container .cta-button:hover {
+  background-color: #10b981;
+}
+
+/* Make all generate buttons green */
+.cta-button.generate-button,
+#generateCustom,
+.generate-button-container .cta-button {
+  background-color: #10b981;
+}
+
+.cta-button.generate-button:hover,
+#generateCustom:hover,
+.generate-button-container .cta-button:hover {
+  background-color: #10b981;
+}
+
+/* Popup styling */
+.popup {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+.popup-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-width: 600px;
+  position: relative;
+}
+
+.close-popup {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--text-light);
+}
+
+.popup h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #3b82f6; /* Blue color instead of red */
+}
+
+#missingFieldsList {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  list-style-type: disc; /* Add bullets */
+}
+
+#missingFieldsList li {
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  padding-left: 0.5rem;
+}
+
+.popup-note {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #f0f9ff; /* Light blue background */
+  border-left: 4px solid #3b82f6; /* Blue border */
+  color: #1e40af; /* Darker blue text */
+  font-size: 0.95rem;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Task success message styling */
+.task-success {
+  margin-top: 1.5rem;
+}
+
+.next-button {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.next-button:hover {
+  background-color: #10b981;
+}
+
+/* Success message in job title section */
+.jobTitle-success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid #10b981;
+  color: #065f46;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.jobTitle-success .success-icon {
+  font-size: 1.5rem;
+  color: #10b981;
+}
+
+.jobTitle-success .title-display {
+  font-weight: 600;
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.jobTitle-success .reset-link {
+  color: var(--primary-color);
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 1rem;
+  display: inline-block;
+}
+
+/* Hide elements when job title is selected */
+.jobTitle-selected .styled-select,
+.jobTitle-selected .divider,
+.jobTitle-selected .custom-title-container,
+.jobTitle-selected h3:not(:first-child),
+.jobTitle-selected .section-description:not(:first-of-type) {
+  display: none;
 }
