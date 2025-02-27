@@ -215,35 +215,72 @@ textarea {
   background-color: white;
 }
 
-/* Checkbox styling */
+/* Update checkbox bubble styling to match site colors */
 .checkbox-container {
-  background-color: rgba(255, 255, 255, 0.5);
-  border: 1px solid var(--border-color);
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  max-height: 150px;
-  overflow-y: auto;
-  background-color: white;
+  background-color: #fafafa;
   border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  display: none; /* Hide by default */
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
+/* Show checkbox container when it has content */
+.checkbox-container.has-content {
+  display: flex;
+}
+
+/* Style for the label that contains both checkbox and text */
 .checkbox-container label {
   display: flex;
   align-items: center;
-  padding: 0.5rem;
-  margin-bottom: 0.25rem;
-  border-radius: 0.25rem;
-  transition: var(--transition);
+  padding: 0.5rem 0.75rem;
+  border-radius: 2rem;
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  color: white;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .checkbox-container label:hover {
-  background-color: rgba(99, 102, 241, 0.05);
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
-input[type="checkbox"] {
+/* Style for the checkbox itself */
+.checkbox-container label input[type="checkbox"] {
+  margin: 0 0.5rem 0 0;
   width: auto;
-  margin-right: 0.75rem;
-  accent-color: var(--primary-color);
+  flex-shrink: 0;
+  accent-color: white;
+}
+
+/* Style for the text span */
+.checkbox-container label span {
+  line-height: 1.2;
+}
+
+/* Checked state styling */
+.checkbox-container label:has(input[type="checkbox"]:checked) {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.checkbox-container label:has(input[type="checkbox"]:not(:checked)) {
+  background-color: #64748b;
+  border-color: #64748b;
+  opacity: 0.8;
+}
+
+.checkbox-container label input[type="checkbox"]:checked + span {
+  font-weight: 500;
 }
 
 /* Custom title container */
@@ -474,9 +511,8 @@ footer {
 .sidebar-layout {
   display: flex;
   gap: 1.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   height: auto;
-  min-height: 500px;
 }
 
 .sidebar {
@@ -490,6 +526,9 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  position: sticky;
+  top: 1rem;
+  height: 600px; /* Fixed height */
 }
 
 .sidebar-item {
@@ -527,10 +566,14 @@ footer {
   box-shadow: var(--box-shadow);
   padding: 1.25rem;
   position: relative;
+  overflow-y: auto; /* Add scrolling for content */
+  height: 600px; /* Fixed height to match sidebar */
 }
 
 .content-section {
   display: none;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .content-section.active {
@@ -745,21 +788,20 @@ footer {
   margin-top: 2rem;
 }
 
-/* Loading overlay */
+/* Update loading overlay to cover the entire screen */
 .loading-overlay {
-  position: absolute;
+  position: fixed; /* Change from absolute to fixed */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9); /* Slightly more opaque */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 10;
-  border-radius: var(--border-radius);
-  backdrop-filter: blur(3px);
+  z-index: 1000; /* Higher z-index to be above everything */
+  backdrop-filter: blur(5px); /* More blur for emphasis */
   display: none;
 }
 
@@ -767,20 +809,24 @@ footer {
   display: flex;
 }
 
+/* Make the spinner larger */
 .spinner {
-  width: 48px;
-  height: 48px;
-  border: 5px solid var(--primary-color);
+  width: 64px; /* Larger spinner */
+  height: 64px; /* Larger spinner */
+  border: 6px solid var(--primary-color);
   border-bottom-color: transparent;
   border-radius: 50%;
   animation: spinner 1s linear infinite;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
+/* Make the loading text more prominent */
 .loading-text {
   color: var(--primary-color);
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1.3rem; /* Larger text */
+  text-align: center;
+  max-width: 80%;
 }
 
 @keyframes spinner {
@@ -799,24 +845,43 @@ footer {
 
 /* Divider with text */
 .divider {
-  display: flex;
-  align-items: center;
+  margin: 2rem 0;
   text-align: center;
-  margin: 1.5rem 0;
-  color: var(--text-light);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.divider::before,
-.divider::after {
+.divider:before,
+.divider:after {
   content: "";
-  flex: 1;
-  border-bottom: 1px solid var(--border-color);
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 30px);
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.divider:before {
+  left: 0;
+}
+
+.divider:after {
+  right: 0;
 }
 
 .divider span {
-  padding: 0 1rem;
-  font-size: 0.9rem;
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  position: relative;
+  z-index: 1;
   font-weight: 500;
+  color: var(--text-light);
+  text-align: center;
 }
 
 /* Make button text responsive */
@@ -995,10 +1060,345 @@ footer {
 }
 
 /* Hide elements when job title is selected */
-.jobTitle-selected .styled-select,
-.jobTitle-selected .divider,
-.jobTitle-selected .custom-title-container,
-.jobTitle-selected h3:not(:first-child),
-.jobTitle-selected .section-description:not(:first-of-type) {
+.jobTitle-selected .title-box,
+.jobTitle-selected .divider {
+  display: none;
+}
+
+/* Update job title boxes to match other sections */
+.title-box {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-color);
+}
+
+/* Remove different background colors for each box */
+.title-box.predefined {
+  background-color: white;
+}
+
+.title-box.custom {
+  background-color: white;
+  border-left: 4px solid var(--primary-color);
+}
+
+/* Make the divider more prominent */
+.divider {
+  margin: 2rem 0;
+  text-align: center;
+  position: relative;
+}
+
+.divider:before,
+.divider:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 30px);
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.divider:before {
+  left: 0;
+}
+
+.divider:after {
+  right: 0;
+}
+
+.divider span {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  position: relative;
+  z-index: 1;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+/* Apply consistent box styling to all content sections */
+.content-box {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-color);
+}
+
+/* Style for section headers */
+.content-box h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: var(--text-color);
+}
+
+/* Style for section descriptions */
+.content-box .section-description {
+  margin-bottom: 1.25rem;
+  color: var(--text-light);
+}
+
+/* Add spacing between sections */
+.content-section > h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Remove resize handles from textareas */
+textarea {
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  width: 100%;
+  min-height: 100px;
+  resize: none; /* This removes the resize handle */
+  font-family: inherit;
+  margin-top: 0.5rem;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Style for checkbox containers */
+.checkbox-container {
+  background-color: #fafafa;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+}
+
+.checkbox-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s ease;
+}
+
+.checkbox-container label:hover {
+  background-color: rgba(99, 102, 241, 0.05);
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* Styling for the add item container */
+.add-item-container {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.add-item-container textarea {
+  flex-grow: 1;
+  margin-top: 0;
+  min-height: 42px;
+  resize: none; /* Ensure these are also not resizable */
+}
+
+.add-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: flex-start;
+  height: 42px;
+  white-space: nowrap;
+}
+
+.add-button:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Compact styling for single-line textareas in Details section */
+.content-box textarea.single-line {
+  min-height: 42px;
+  resize: none;
+  overflow: hidden;
+  line-height: 1.5;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0;
+}
+
+/* Add specific styling for each details section */
+#details-section .content-box {
+  margin-bottom: 1rem;
+}
+
+#details-section .content-box:last-child {
+  margin-bottom: 1.5rem;
+}
+
+/* Adjust the main content area to be more flexible */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background-color: var(--background-color);
+}
+
+/* Make the form container take up available space */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Ensure the content wrapper fills available space */
+.content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add padding at the bottom of the last content box */
+.content-box:last-child {
+  margin-bottom: 0;
+}
+
+/* Ensure the generate button stays at the bottom */
+.generate-button-container {
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+/* Add padding at the bottom of content sections for better scrolling */
+.content-section:after {
+  display: none;
+}
+
+/* Add more space between content boxes */
+.content-box {
+  margin-bottom: 1.5rem;
+}
+
+/* Add more space at the bottom of the content area */
+.content-area {
+  padding-bottom: 2rem;
+}
+
+/* Style for the guidance text */
+.style-guidance {
+  margin: 1.5rem 0 0.75rem;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  background-color: rgba(99, 102, 241, 0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--primary-color);
+}
+
+.style-guidance p {
+  margin: 0;
+}
+
+/* Style for the editable text area */
+.editable-text {
+  width: 100%;
+  min-height: 300px;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  background-color: white;
+  resize: vertical;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  white-space: pre-wrap;
+}
+
+.editable-text:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Style for the rich text editor */
+.rich-text-editor {
+  width: 100%;
+  min-height: 300px;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  background-color: white;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+.rich-text-editor:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Style for headings in the rich text editor */
+.rich-text-editor h1,
+.rich-text-editor h2,
+.rich-text-editor h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-color);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.rich-text-editor h1 {
+  font-size: 1.5rem;
+}
+
+.rich-text-editor h2 {
+  font-size: 1.3rem;
+}
+
+.rich-text-editor h3 {
+  font-size: 1.1rem;
+}
+
+.rich-text-editor strong {
+  font-weight: 600;
+}
+
+.rich-text-editor ul,
+.rich-text-editor ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.rich-text-editor li {
+  margin-bottom: 0.5rem;
+}
+
+/* Hide the actual textarea */
+.hidden {
   display: none;
 }

@@ -105,6 +105,7 @@ def get_initial_data():
 def get_final_listing():
     try:
         data = request.json
+        print("Received data:", data)  # Add this for debugging
         final_listing = generate_final_listing(data)
         return jsonify(final_listing)
         
@@ -146,6 +147,67 @@ def regenerate_style():
     except Exception as e:
         print(f"Error occurred: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+@app.route('/update-style', methods=['POST'])
+def update_style():
+    data = request.json
+    text = data.get('text', '')
+    style = data.get('style', '')
+    
+    if not text or not style:
+        return jsonify({'error': 'Missing text or style parameter'}), 400
+    
+    try:
+        # Create the prompt based on the requested style
+        if style == 'professionell':
+            prompt = f"""
+            Gör följande jobbannons mer professionell. Använd ett formellt språk, 
+            fokusera på företagets värderingar och den professionella utvecklingen. 
+            Behåll all väsentlig information men uttryck den på ett mer professionellt sätt.
+            
+            Jobbannons:
+            {text}
+            """
+        elif style == 'lättsam':
+            prompt = f"""
+            Gör följande jobbannons mer lättsam och personlig. Använd ett varmare och 
+            mer inbjudande språk, fokusera på arbetsmiljön och teamkänslan. 
+            Behåll all väsentlig information men uttryck den på ett mer personligt sätt.
+            
+            Jobbannons:
+            {text}
+            """
+        elif style == 'koncis':
+            prompt = f"""
+            Gör följande jobbannons mer koncis och direkt. Ta bort onödiga ord och fraser, 
+            fokusera på det väsentliga och gör texten mer kärnfull. 
+            Behåll all viktig information men uttryck den på ett mer koncist sätt.
+            
+            Jobbannons:
+            {text}
+            """
+        else:
+            return jsonify({'error': 'Invalid style parameter'}), 400
+        
+        # Call the OpenAI API
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Du är en expert på att skriva jobbannonser på svenska."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=1500
+        )
+        
+        # Extract the updated text from the response
+        updated_text = response.choices[0].message.content.strip()
+        
+        return jsonify({'updated_text': updated_text})
+    
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

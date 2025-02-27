@@ -3,6 +3,9 @@ function autoExpandTextarea(element) {
   element.style.height = element.scrollHeight + "px";
 }
 
+// Fix the validation popup issue - move this outside the DOMContentLoaded event
+let generateFinalBtn; // Declare this at the top level
+
 document.addEventListener("DOMContentLoaded", function () {
   const jobTitleSelect = document.getElementById("jobTitle");
   const customTitleInput = document.getElementById("customTitle");
@@ -43,8 +46,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const sidebarItems = document.querySelectorAll(".sidebar-item");
   const contentSections = document.querySelectorAll(".content-section");
 
+  // Add click event listeners to sidebar items
   sidebarItems.forEach((item) => {
     item.addEventListener("click", function () {
+      // Get the section to show
+      const sectionToShow = this.getAttribute("data-section");
+
+      console.log("Clicked sidebar item:", sectionToShow); // Debug log
+
       // Remove active class from all sidebar items
       sidebarItems.forEach((i) => i.classList.remove("active"));
 
@@ -52,11 +61,15 @@ document.addEventListener("DOMContentLoaded", function () {
       this.classList.add("active");
 
       // Hide all content sections
-      contentSections.forEach((section) => section.classList.remove("active"));
+      contentSections.forEach((section) => {
+        section.classList.remove("active");
+      });
 
-      // Show the corresponding content section
-      const sectionId = this.getAttribute("data-section") + "-section";
-      document.getElementById(sectionId).classList.add("active");
+      // Show the selected section
+      const targetSection = document.getElementById(`${sectionToShow}-section`);
+      if (targetSection) {
+        targetSection.classList.add("active");
+      }
     });
   });
 
@@ -187,12 +200,15 @@ document.addEventListener("DOMContentLoaded", function () {
             containers[key].innerHTML = items
               .map(
                 (item) =>
-                  `<label><input type="checkbox" checked> ${item}</label>`
+                  `<label><input type="checkbox" checked><span>${item}</span></label>`
               )
               .join("");
-            containers[key].style.display = "block"; // Show container when it has content
+
+            // Add has-content class to show the container
+            containers[key].classList.add("has-content");
           } else {
-            containers[key].style.display = "none"; // Hide if empty
+            containers[key].innerHTML = "";
+            containers[key].classList.remove("has-content");
           }
         }
       });
@@ -220,6 +236,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const loadingOverlay = document.getElementById("loadingOverlay");
     if (loadingOverlay) {
       loadingOverlay.classList.add("visible");
+
+      // Update loading message
+      const loadingText = loadingOverlay.querySelector(".loading-text");
+      if (loadingText) {
+        loadingText.textContent = "Genererar jobbannons...";
+      }
     }
 
     // Collect all the data
@@ -229,21 +251,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const data = {
       title: title,
-      about: document.getElementById("aboutInput").value.trim(),
-      location: document.getElementById("locationInput").value.trim(),
+      about: [document.getElementById("aboutInput").value.trim()],
+      location: [document.getElementById("locationInput").value.trim()],
       tasks: getCheckedItems("tasks"),
       requirements: getCheckedItems("requirements"),
       preferredSkills: getCheckedItems("preferredSkills"),
-      employmentType: document
-        .getElementById("employmentTypeInput")
-        .value.trim(),
-      applyDay: document.getElementById("applyDayInput").value.trim(),
-      contact: document.getElementById("contactInput").value.trim(),
-      extraInfo: document.getElementById("extraInfoInput").value.trim(),
+      employmentType: [
+        document.getElementById("employmentTypeInput").value.trim(),
+      ],
+      applyDay: [document.getElementById("applyDayInput").value.trim()],
+      contact: [document.getElementById("contactInput").value.trim()],
+      extraInfo: [document.getElementById("extraInfoInput").value.trim()],
     };
 
     // Make API call to generate listing
-    fetch("/generate-listing", {
+    fetch("http://127.0.0.1:5000/generate-final-listing", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -257,14 +279,19 @@ document.addEventListener("DOMContentLoaded", function () {
           loadingOverlay.classList.remove("visible");
         }
 
-        // Display the generated content
+        // Store the raw markdown in the hidden textarea
         const generatedText = document.getElementById("generatedText");
-        const formattedText = document.getElementById("formattedText");
-
-        if (generatedText && formattedText) {
+        if (generatedText) {
           generatedText.value =
             data.listing || "Kunde inte generera jobbannons.";
-          formattedText.innerHTML = markdownToHtml(generatedText.value);
+        }
+
+        // Display the formatted HTML in the rich text editor
+        const richTextEditor = document.getElementById("richTextEditor");
+        if (richTextEditor) {
+          richTextEditor.innerHTML = markdownToHtml(
+            data.listing || "Kunde inte generera jobbannons."
+          );
         }
 
         // Show the generated content section
@@ -341,7 +368,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   copyButton.addEventListener("click", async function () {
     try {
-      await navigator.clipboard.writeText(generatedText.value);
+      // Get the text from the rich text editor
+      const richTextEditor = document.getElementById("richTextEditor");
+      await navigator.clipboard.writeText(richTextEditor.innerText);
+
       const originalText = this.textContent;
       this.textContent = "Kopierat!";
       setTimeout(() => {
@@ -368,51 +398,121 @@ document.addEventListener("DOMContentLoaded", function () {
     autoExpandTextarea(textarea);
   });
 
-  // Add functionality to add custom items from textareas
-  document
-    .getElementById("tasksInput")
-    .addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        const value = this.value.trim();
-        if (value) {
-          const newItem = document.createElement("label");
-          newItem.innerHTML = `<input type="checkbox" checked> ${value}`;
-          containers.tasks.appendChild(newItem);
-          this.value = "";
-        }
+  // Add special handling for single-line textareas
+  document.querySelectorAll("textarea.single-line").forEach((textarea) => {
+    textarea.addEventListener("input", function () {
+      // Limit expansion for single-line textareas
+      this.style.height = "42px";
+
+      // Only allow it to grow to a maximum of 2 lines
+      const maxHeight = 42 * 2; // 2 lines
+      if (this.scrollHeight > maxHeight) {
+        this.style.height = maxHeight + "px";
+        this.style.overflowY = "auto";
+      } else {
+        this.style.height = this.scrollHeight + "px";
+        this.style.overflowY = "hidden";
       }
     });
 
-  document
-    .getElementById("requirementsInput")
-    .addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        const value = this.value.trim();
-        if (value) {
-          const newItem = document.createElement("label");
-          newItem.innerHTML = `<input type="checkbox" checked> ${value}`;
-          containers.requirements.appendChild(newItem);
-          this.value = "";
-        }
-      }
+    // Initial call to set correct height
+    textarea.style.height = "42px";
+  });
+
+  // Add event listeners for textareas only if they exist
+  // Remove these declarations since they're redeclared later
+  // const tasksInput = document.querySelector("#jobDetails-section textarea");
+  // const requirementsInput = document.querySelector("#requirements-section textarea");
+  // const preferredSkillsInput = document.querySelector("#preferredSkills-section textarea");
+
+  // Function to add item to a container
+  function addItemToContainer(inputElement, containerId) {
+    const value = inputElement.value.trim();
+    if (value) {
+      const container = document.getElementById(containerId);
+
+      // Create the label element
+      const label = document.createElement("label");
+
+      // Create the checkbox
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = true;
+
+      // Create the span for the text
+      const span = document.createElement("span");
+      span.textContent = value;
+
+      // Add the elements to the label
+      label.appendChild(checkbox);
+      label.appendChild(span);
+
+      // Add the label to the container
+      container.appendChild(label);
+
+      // Add has-content class to show the container
+      container.classList.add("has-content");
+
+      // Clear the input
+      inputElement.value = "";
+
+      // Reset the height of the textarea
+      autoExpandTextarea(inputElement);
+    }
+  }
+
+  // Add Task Button
+  const addTaskButton = document.getElementById("addTaskButton");
+  const tasksInput = document.getElementById("tasksInput");
+  if (addTaskButton && tasksInput) {
+    addTaskButton.addEventListener("click", function () {
+      addItemToContainer(tasksInput, "tasks");
     });
 
-  document
-    .getElementById("preferredSkillsInput")
-    .addEventListener("keypress", function (e) {
+    // Keep the Enter key functionality
+    tasksInput.addEventListener("keypress", function (e) {
       if (e.key === "Enter") {
         e.preventDefault();
-        const value = this.value.trim();
-        if (value) {
-          const newItem = document.createElement("label");
-          newItem.innerHTML = `<input type="checkbox" checked> ${value}`;
-          containers.preferredSkills.appendChild(newItem);
-          this.value = "";
-        }
+        addItemToContainer(this, "tasks");
       }
     });
+  }
+
+  // Add Requirement Button
+  const addRequirementButton = document.getElementById("addRequirementButton");
+  const requirementsInput = document.getElementById("requirementsInput");
+  if (addRequirementButton && requirementsInput) {
+    addRequirementButton.addEventListener("click", function () {
+      addItemToContainer(requirementsInput, "requirements");
+    });
+
+    // Keep the Enter key functionality
+    requirementsInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addItemToContainer(this, "requirements");
+      }
+    });
+  }
+
+  // Add Preferred Skill Button
+  const addPreferredSkillButton = document.getElementById(
+    "addPreferredSkillButton"
+  );
+  const preferredSkillsInput = document.getElementById("preferredSkillsInput");
+  if (addPreferredSkillButton && preferredSkillsInput) {
+    addPreferredSkillButton.addEventListener("click", function () {
+      addItemToContainer(preferredSkillsInput, "preferredSkills");
+    });
+
+    // Keep the Enter key functionality
+    preferredSkillsInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addItemToContainer(this, "preferredSkills");
+      }
+    });
+  }
 
   const resetButton = document.getElementById("resetButton");
   const jobTitleSection = document.getElementById("jobTitle-section");
@@ -448,24 +548,23 @@ document.addEventListener("DOMContentLoaded", function () {
     jobTitleSection.classList.add("suggestions-generated");
   };
 
-  // Add validation for the generate button
-  const validationPopup = document.getElementById("validationPopup");
-  const closePopup = document.querySelector(".close-popup");
-  const continueAnyway = document.getElementById("continueAnyway");
-  const fillMissingInfo = document.getElementById("fillMissingInfo");
-  const missingFieldsList = document.getElementById("missingFieldsList");
-
+  // Move the event listener here
   if (generateFinalBtn) {
+    console.log("Adding click event to generate button");
     generateFinalBtn.addEventListener("click", function (e) {
+      console.log("Generate button clicked");
       // Check for missing fields
       const missingFields = validateForm();
+      console.log("Missing fields:", missingFields);
 
       if (missingFields.length > 0) {
         // Show popup with missing fields
+        console.log("Showing validation popup");
         showValidationPopup(missingFields);
         e.preventDefault();
       } else {
         // All fields are filled, proceed with generation
+        console.log("Proceeding with generation");
         generateFinalListing();
       }
     });
@@ -527,23 +626,17 @@ document.addEventListener("DOMContentLoaded", function () {
     validationPopup.style.display = "block";
   }
 
-  // Close popup when clicking the X
-  if (closePopup) {
-    closePopup.addEventListener("click", function () {
-      validationPopup.style.display = "none";
-    });
-  }
-
-  // Close popup when clicking outside
-  window.addEventListener("click", function (e) {
-    if (e.target === validationPopup) {
-      validationPopup.style.display = "none";
-    }
-  });
+  // Get the popup elements
+  const validationPopup = document.getElementById("validationPopup");
+  const closePopup = document.querySelector(".close-popup");
+  const continueAnyway = document.getElementById("continueAnyway");
+  const fillMissingInfo = document.getElementById("fillMissingInfo");
+  const missingFieldsList = document.getElementById("missingFieldsList");
 
   // Handle "Continue Anyway" button
   if (continueAnyway) {
     continueAnyway.addEventListener("click", function () {
+      console.log("Continue anyway clicked");
       validationPopup.style.display = "none";
       // Trigger the generation process
       generateFinalListing();
@@ -553,6 +646,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Handle "Fill Missing Info" button
   if (fillMissingInfo) {
     fillMissingInfo.addEventListener("click", function () {
+      console.log("Fill missing info clicked");
       validationPopup.style.display = "none";
       // Navigate to the first section with missing info
       const missingFields = validateForm();
@@ -587,6 +681,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Close popup when clicking the X
+  if (closePopup) {
+    closePopup.addEventListener("click", function () {
+      validationPopup.style.display = "none";
+    });
+  }
+
+  // Close popup when clicking outside
+  window.addEventListener("click", function (e) {
+    if (e.target === validationPopup) {
+      validationPopup.style.display = "none";
+    }
+  });
+
   // Add this function to reset the job title selection
   function resetJobTitleSelection() {
     // Reset the job title select
@@ -620,14 +728,123 @@ document.addEventListener("DOMContentLoaded", function () {
     const successMessage = document.getElementById("suggestionsGenerated");
     successMessage.style.display = "none";
   }
+
+  // Add functionality to style buttons
+  document.addEventListener("DOMContentLoaded", function () {
+    // Get the style buttons
+    const professionalBtn = document.getElementById("professionalBtn");
+    const joyfulBtn = document.getElementById("joyfulBtn");
+    const conciseBtn = document.getElementById("conciseBtn");
+
+    // Get the generated text elements
+    const generatedText = document.getElementById("generatedText");
+    const formattedText = document.getElementById("formattedText");
+
+    // Function to update the text style
+    async function updateTextStyle(style) {
+      // Show loading overlay
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      if (loadingOverlay) {
+        loadingOverlay.classList.add("visible");
+
+        // Update loading message
+        const loadingText = loadingOverlay.querySelector(".loading-text");
+        if (loadingText) {
+          loadingText.textContent = `Gör texten mer ${style.toLowerCase()}...`;
+        }
+      }
+
+      try {
+        // Get the current text from the rich text editor
+        const richTextEditor = document.getElementById("richTextEditor");
+        const currentText = richTextEditor.innerText;
+
+        // Create the request data
+        const requestData = {
+          text: currentText,
+          style: style,
+        };
+
+        // Send the request to the API
+        const response = await fetch("http://127.0.0.1:5000/update-style", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        });
+
+        // Parse the response
+        const data = await response.json();
+
+        // Update the text
+        if (data.updated_text) {
+          // Store the raw markdown in the hidden textarea
+          document.getElementById("generatedText").value = data.updated_text;
+
+          // Update the rich text editor with formatted HTML
+          richTextEditor.innerHTML = markdownToHtml(data.updated_text);
+        }
+      } catch (error) {
+        console.error("Error updating text style:", error);
+        alert(
+          "Ett fel uppstod när texten skulle uppdateras. Försök igen senare."
+        );
+      } finally {
+        // Hide loading overlay
+        if (loadingOverlay) {
+          loadingOverlay.classList.remove("visible");
+        }
+      }
+    }
+
+    // Add click event listeners to the style buttons
+    if (professionalBtn) {
+      professionalBtn.addEventListener("click", function () {
+        updateTextStyle("professionell");
+      });
+    }
+
+    if (joyfulBtn) {
+      joyfulBtn.addEventListener("click", function () {
+        updateTextStyle("lättsam");
+      });
+    }
+
+    if (conciseBtn) {
+      conciseBtn.addEventListener("click", function () {
+        updateTextStyle("koncis");
+      });
+    }
+  });
 });
 
-// Add this function to convert markdown to HTML
+// Improve the markdown to HTML conversion
 function markdownToHtml(text) {
-  return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  if (!text) return "";
+
+  // Handle headers
+  text = text.replace(/^# (.*?)$/gm, "<h1>$1</h1>");
+  text = text.replace(/^## (.*?)$/gm, "<h2>$1</h2>");
+  text = text.replace(/^### (.*?)$/gm, "<h3>$1</h3>");
+
+  // Handle bold text
+  text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // Handle italic text
+  text = text.replace(/\*(.*?)\*/g, "<em>$1</em>");
+
+  // Handle line breaks
+  text = text.replace(/\n/g, "<br>");
+
+  // Handle lists
+  text = text.replace(/^\- (.*?)$/gm, "<li>$1</li>");
+  text = text.replace(/(<li>.*?<\/li>)+/g, "<ul>$&</ul>");
+
+  return text;
 }
 
-// Helper function to get checked items
+// Update the getCheckedItems function to get text from the span element
 function getCheckedItems(containerId) {
   const container = document.getElementById(containerId);
   const checkedItems = [];
@@ -637,7 +854,11 @@ function getCheckedItems(containerId) {
       "input[type='checkbox']:checked"
     );
     checkboxes.forEach((checkbox) => {
-      checkedItems.push(checkbox.parentNode.textContent.trim());
+      // Get the text from the span element that follows the checkbox
+      const span = checkbox.nextElementSibling;
+      if (span && span.tagName === "SPAN") {
+        checkedItems.push(span.textContent.trim());
+      }
     });
   }
 
