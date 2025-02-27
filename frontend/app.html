@@ -66,6 +66,18 @@
               <span class="sidebar-icon">ℹ️</span>
               <span class="sidebar-text">Extra info</span>
             </div>
+
+            <!-- Add a spacer to push the generate button to the bottom -->
+            <div class="sidebar-spacer"></div>
+
+            <!-- Make the entire area a button -->
+            <button
+              type="button"
+              id="generateFinalButton"
+              class="sidebar-generate"
+            >
+              <span class="button-icon">✨</span> Generera Annons
+            </button>
           </div>
 
           <!-- Content area -->
@@ -88,6 +100,11 @@
 
             <!-- Job Title Section -->
             <div class="content-section active" id="jobTitle-section">
+              <p class="explanation-text">
+                Här väljer du jobbtitel och därefter genereras anpassade förslag
+                på arbetsuppgifter, kvalifikationer och meriterande egenskaper.
+              </p>
+
               <div class="title-box predefined">
                 <h3>Välj jobbtitel</h3>
                 <p class="section-description">
@@ -97,11 +114,18 @@
 
                 <div class="styled-select">
                   <select id="jobTitle" required>
-                    <option value="">Välj en titel...</option>
-                    <option value="Software Engineer">Software Engineer</option>
+                    <option value="" disabled selected>Välj titel</option>
                     <option value="Projektledare">Projektledare</option>
                     <option value="Marknadsförare">Marknadsförare</option>
-                    <option value="Eget">Ange egen titel...</option>
+                    <option value="UX Designer">UX Designer</option>
+                    <option value="Ekonomichef">Ekonomichef</option>
+                    <option value="Systemutvecklare">Systemutvecklare</option>
+                    <option value="IT-konsult">IT-konsult</option>
+                    <option value="HR-konsult">HR-konsult</option>
+                    <option value="Försäljningschef">Försäljningschef</option>
+                    <option value="Försäljningsansvarig">
+                      Försäljningsansvarig
+                    </option>
                   </select>
                   <div class="select-arrow">▾</div>
                 </div>
@@ -266,6 +290,13 @@
 
             <!-- Extra Info Section -->
             <div class="content-section" id="extraInfo-section">
+              <p class="explanation-text">
+                Här skriver du in om det finns extra information som behövs för
+                annonsen. Det kan vara att trycka på någon särskild
+                arbetsuppgift eller egenskap, något särskilt du vill ha med i
+                annonsen.
+              </p>
+
               <div class="content-box">
                 <h3>Extra information</h3>
                 <div id="extraInfo"></div>
@@ -276,17 +307,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Generate button moved outside the sidebar -->
-        <div class="generate-button-container">
-          <button
-            type="button"
-            id="generateFinalButton"
-            class="cta-button large"
-          >
-            Generera Annons
-          </button>
         </div>
 
         <div class="generated-content">

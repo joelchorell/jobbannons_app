@@ -223,6 +223,9 @@ document.addEventListener("DOMContentLoaded", function () {
         // Find the company section in sidebar and click it
         document.querySelector('[data-section="company"]').click();
       });
+
+      // Update sidebar items to show content was generated
+      updateSidebarItems();
     } catch (error) {
       console.error("Error details:", error);
       showError(`Ett fel uppstod: ${error.message}`);
@@ -230,6 +233,28 @@ document.addEventListener("DOMContentLoaded", function () {
       hideLoadingOverlay();
       loadingIndicator.style.display = "none";
     }
+  }
+
+  // Update the updateSidebarItems function to use a temporary animation
+  function updateSidebarItems() {
+    // Get the sidebar items for the sections we want to update
+    const sectionsToUpdate = ["jobDetails", "requirements", "preferredSkills"];
+
+    // Add a temporary pulse animation to each section
+    sectionsToUpdate.forEach((section) => {
+      const sidebarItem = document.querySelector(
+        `.sidebar-item[data-section="${section}"]`
+      );
+      if (sidebarItem) {
+        // Add animation class
+        sidebarItem.classList.add("pulse-animation");
+
+        // Remove the animation class after it completes
+        setTimeout(() => {
+          sidebarItem.classList.remove("pulse-animation");
+        }, 1500);
+      }
+    });
   }
 
   async function generateFinalListing() {
@@ -549,28 +574,34 @@ document.addEventListener("DOMContentLoaded", function () {
     jobTitleSection.classList.add("suggestions-generated");
   };
 
-  // Move the event listener here
+  // Update the event listener for the generate button
   if (generateFinalBtn) {
-    console.log("Adding click event to generate button");
-    generateFinalBtn.addEventListener("click", function (e) {
-      console.log("Generate button clicked");
-      // Check for missing fields
-      const missingFields = validateForm();
-      console.log("Missing fields:", missingFields);
-
-      if (missingFields.length > 0) {
-        // Show popup with missing fields
-        console.log("Showing validation popup");
-        showValidationPopup(missingFields);
-        e.preventDefault();
-      } else {
-        // All fields are filled, proceed with generation
-        console.log("Proceeding with generation");
-        generateFinalListing();
-      }
+    generateFinalBtn.addEventListener("click", function () {
+      // Call the global function
+      window.validateAndGenerate();
     });
   }
 
+  // Move validateAndGenerate outside the DOMContentLoaded event
+  function validateAndGenerate() {
+    console.log("Validating form before generation");
+
+    // Check for missing fields
+    const missingFields = validateForm();
+    console.log("Missing fields:", missingFields);
+
+    if (missingFields.length > 0) {
+      // Show popup with missing fields
+      console.log("Showing validation popup");
+      showValidationPopup(missingFields);
+    } else {
+      // All fields are filled, proceed with generation
+      console.log("Proceeding with generation");
+      generateFinalListing();
+    }
+  }
+
+  // Also move validateForm and showValidationPopup outside
   function validateForm() {
     const missingFields = [];
 
@@ -613,6 +644,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function showValidationPopup(missingFields) {
+    // Get the popup elements
+    const validationPopup = document.getElementById("validationPopup");
+    const missingFieldsList = document.getElementById("missingFieldsList");
+
     // Clear previous list
     missingFieldsList.innerHTML = "";
 
@@ -628,11 +663,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Get the popup elements
-  const validationPopup = document.getElementById("validationPopup");
   const closePopup = document.querySelector(".close-popup");
   const continueAnyway = document.getElementById("continueAnyway");
   const fillMissingInfo = document.getElementById("fillMissingInfo");
-  const missingFieldsList = document.getElementById("missingFieldsList");
 
   // Handle "Continue Anyway" button
   if (continueAnyway) {
@@ -827,6 +860,48 @@ document.addEventListener("DOMContentLoaded", function () {
       updateTextStyle("koncis");
     });
   }
+
+  // Add CSS for the sidebar indicators
+  if (!document.getElementById("sidebarIndicatorStyles")) {
+    const styleElement = document.createElement("style");
+    styleElement.id = "sidebarIndicatorStyles";
+    styleElement.textContent = `
+      .sidebar-item.has-content {
+        background-color: rgba(99, 102, 241, 0.1);
+        position: relative;
+      }
+      
+      .sidebar-item.has-content::after {
+        content: '✓';
+        display: inline-block;
+        margin-left: 8px;
+        color: #10b981;
+        font-weight: bold;
+      }
+    `;
+    document.head.appendChild(styleElement);
+  }
+
+  // Add this CSS to the document
+  if (!document.getElementById("sidebarAnimationStyles")) {
+    const styleElement = document.createElement("style");
+    styleElement.id = "sidebarAnimationStyles";
+    styleElement.textContent = `
+      @keyframes pulseHighlight {
+        0% { background-color: rgba(99, 102, 241, 0.1); }
+        50% { background-color: rgba(99, 102, 241, 0.3); }
+        100% { background-color: transparent; }
+      }
+      
+      .sidebar-item.pulse-animation {
+        animation: pulseHighlight 1.5s ease-in-out forwards;
+      }
+    `;
+    document.head.appendChild(styleElement);
+  }
+
+  // Make sure this function is available globally
+  window.validateAndGenerate = validateAndGenerate;
 });
 
 // Improve the markdown to HTML conversion
