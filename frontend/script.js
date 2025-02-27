@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const generatedText = document.getElementById("generatedText");
   const copyButton = document.getElementById("copyButton");
 
+  // Get the style buttons once - KEEP THIS DECLARATION
   const professionalBtn = document.getElementById("professionalBtn");
   const joyfulBtn = document.getElementById("joyfulBtn");
   const conciseBtn = document.getElementById("conciseBtn");
@@ -341,8 +342,14 @@ document.addEventListener("DOMContentLoaded", function () {
       const result = await response.json();
       if (result.listing) {
         generatedText.value = result.listing;
-        const formattedText = document.getElementById("formattedText");
-        formattedText.innerHTML = markdownToHtml(result.listing);
+
+        // Update the rich text editor instead of formattedText
+        const richTextEditor = document.getElementById("richTextEditor");
+        if (richTextEditor) {
+          richTextEditor.innerHTML = markdownToHtml(result.listing);
+        } else {
+          console.error("Rich text editor element not found");
+        }
       }
     } catch (error) {
       console.error("Error details:", error);
@@ -381,12 +388,6 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Failed to copy text:", err);
     }
   });
-
-  professionalBtn.addEventListener("click", () =>
-    regenerateWithStyle("professional")
-  );
-  joyfulBtn.addEventListener("click", () => regenerateWithStyle("joyful"));
-  conciseBtn.addEventListener("click", () => regenerateWithStyle("concise"));
 
   // Add auto-expand to all textareas
   document.querySelectorAll("textarea").forEach((textarea) => {
@@ -729,94 +730,103 @@ document.addEventListener("DOMContentLoaded", function () {
     successMessage.style.display = "none";
   }
 
-  // Add functionality to style buttons
-  document.addEventListener("DOMContentLoaded", function () {
-    // Get the style buttons
-    const professionalBtn = document.getElementById("professionalBtn");
-    const joyfulBtn = document.getElementById("joyfulBtn");
-    const conciseBtn = document.getElementById("conciseBtn");
+  // Function to update the text style
+  async function updateTextStyle(style) {
+    console.log("updateTextStyle called with style:", style);
 
-    // Get the generated text elements
-    const generatedText = document.getElementById("generatedText");
-    const formattedText = document.getElementById("formattedText");
+    // Show loading overlay with appropriate message
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    if (loadingOverlay) {
+      // Update loading message
+      const loadingText = loadingOverlay.querySelector(".loading-text");
+      if (loadingText) {
+        loadingText.textContent = `Jobbar med att ändra stilen till mer ${style.toLowerCase()}...`;
+      }
 
-    // Function to update the text style
-    async function updateTextStyle(style) {
-      // Show loading overlay
-      const loadingOverlay = document.getElementById("loadingOverlay");
+      // Show the overlay
+      loadingOverlay.classList.add("visible");
+    }
+
+    try {
+      // Get the current text from the rich text editor
+      const richTextEditor = document.getElementById("richTextEditor");
+      if (!richTextEditor) {
+        console.error("Rich text editor element not found");
+        return;
+      }
+
+      const currentText = richTextEditor.innerText;
+      console.log("Text to style:", currentText.substring(0, 50) + "...");
+
+      // Create the request data
+      const requestData = {
+        text: currentText,
+        style: style,
+      };
+
+      console.log("Sending request to API:", requestData);
+
+      // Send the request to the API
+      const response = await fetch("http://127.0.0.1:5000/update-style", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      console.log("Response status:", response.status);
+
+      // Parse the response
+      const data = await response.json();
+      console.log("Response data:", data);
+
+      // Update the text
+      if (data.updated_text) {
+        // Store the raw markdown in the hidden textarea
+        const generatedText = document.getElementById("generatedText");
+        if (generatedText) {
+          generatedText.value = data.updated_text;
+        }
+
+        // Update the rich text editor with formatted HTML
+        richTextEditor.innerHTML = markdownToHtml(data.updated_text);
+        console.log("Text updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating text style:", error);
+      alert(
+        "Ett fel uppstod när texten skulle uppdateras. Försök igen senare."
+      );
+    } finally {
+      // Hide loading overlay
       if (loadingOverlay) {
-        loadingOverlay.classList.add("visible");
-
-        // Update loading message
-        const loadingText = loadingOverlay.querySelector(".loading-text");
-        if (loadingText) {
-          loadingText.textContent = `Gör texten mer ${style.toLowerCase()}...`;
-        }
-      }
-
-      try {
-        // Get the current text from the rich text editor
-        const richTextEditor = document.getElementById("richTextEditor");
-        const currentText = richTextEditor.innerText;
-
-        // Create the request data
-        const requestData = {
-          text: currentText,
-          style: style,
-        };
-
-        // Send the request to the API
-        const response = await fetch("http://127.0.0.1:5000/update-style", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        });
-
-        // Parse the response
-        const data = await response.json();
-
-        // Update the text
-        if (data.updated_text) {
-          // Store the raw markdown in the hidden textarea
-          document.getElementById("generatedText").value = data.updated_text;
-
-          // Update the rich text editor with formatted HTML
-          richTextEditor.innerHTML = markdownToHtml(data.updated_text);
-        }
-      } catch (error) {
-        console.error("Error updating text style:", error);
-        alert(
-          "Ett fel uppstod när texten skulle uppdateras. Försök igen senare."
-        );
-      } finally {
-        // Hide loading overlay
-        if (loadingOverlay) {
-          loadingOverlay.classList.remove("visible");
-        }
+        loadingOverlay.classList.remove("visible");
       }
     }
+  }
 
-    // Add click event listeners to the style buttons
-    if (professionalBtn) {
-      professionalBtn.addEventListener("click", function () {
-        updateTextStyle("professionell");
-      });
-    }
+  // Add click event listeners to the style buttons
+  if (professionalBtn) {
+    professionalBtn.addEventListener("click", function () {
+      console.log("Professional button clicked");
+      updateTextStyle("professionell");
+    });
+  }
 
-    if (joyfulBtn) {
-      joyfulBtn.addEventListener("click", function () {
-        updateTextStyle("lättsam");
-      });
-    }
+  if (joyfulBtn) {
+    joyfulBtn.addEventListener("click", function () {
+      console.log("Joyful button clicked");
+      updateTextStyle("lättsam");
+    });
+  }
 
-    if (conciseBtn) {
-      conciseBtn.addEventListener("click", function () {
-        updateTextStyle("koncis");
-      });
-    }
-  });
+  if (conciseBtn) {
+    conciseBtn.addEventListener("click", function () {
+      console.log("Concise button clicked");
+      updateTextStyle("koncis");
+    });
+  }
 });
 
 // Improve the markdown to HTML conversion
