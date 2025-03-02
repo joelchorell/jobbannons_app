@@ -1,0 +1,134 @@
+export default {
+	async fetch(request, env, ctx) {
+		const url = new URL(request.url);
+		const path = url.pathname;
+
+		if (request.method !== 'POST') {
+			return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+				status: 405,
+				headers: { 'Content-Type': 'application/json' },
+			});
+		}
+
+		const data = await request.json();
+		const apiKey = env.API_KEY;
+		const headers = {
+			Authorization: `Bearer ${apiKey}`, // Space is optional but standard
+			'Content-Type': 'application/json',
+		};
+
+		if (path === '/generate-initial-data') {
+			const jobTitle = data.jobTitle;
+			if (!jobTitle) {
+				return new Response(JSON.stringify({ error: 'Ingen jobbtitel angiven' }), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+
+			const prompt = `
+		  Du är en erfaren rekryterare. Skapa relevanta arbetsuppgifter, kvalifikationer och meriterande egenskaper för positionen "${jobTitle}".
+		  Svara ENDAST med ett JSON-objekt i exakt detta format:
+		  {
+			"tasks": ["Uppgift 1", "Uppgift 2", "Uppgift 3"],
+			"requirements": ["Krav 1", "Krav 2", "Krav 3"],
+			"preferredSkills": ["Meriterande 1", "Meriterande 2", "Meriterande 3"]
+		  }
+		`;
+
+			try {
+				const response = await fetch('https://api.openai.com/v1/chat/completions', {
+					method: 'POST',
+					headers,
+					body: JSON.stringify({
+						model: 'gpt-4o-mini',
+						messages: [
+							{ role: 'system', content: 'Du är en rekryteringsassistent som svarar endast med JSON.' },
+							{ role: 'user', content: prompt },
+						],
+					}),
+				});
+
+				const result = await response.json();
+				let content = result.choices[0].message.content;
+				if (content.includes('```json')) {
+					content = content.split('```json')[1].split('```')[0];
+				}
+				return new Response(content, {
+					headers: { 'Content-Type': 'application/json' },
+				});
+			} catch (error) {
+				return new Response(JSON.stringify({ error: 'API request failed', details: error.message }), {
+					status: 500,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+		}
+
+		if (path === '/generate-final-listing') {
+			if (
+				!data.tasks ||
+				!data.requirements ||
+				!data.preferredSkills ||
+				!data.about ||
+				!data.location ||
+				!data.employmentType ||
+				!data.applyDay ||
+				!data.contact ||
+				!data.extraInfo
+			) {
+				return new Response(JSON.stringify({ error: 'Missing required fields' }), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+
+			const prompt = `
+		  Du är en kreativ och professionell rekryterare. Skapa en engagerande jobbannons baserad på följande information:
+		  - Arbetsuppgifter: ${data.tasks.join(', ')}
+		  - Kvalifikationer: ${data.requirements.join(', ')}
+		  - Meriterande egenskaper: ${data.preferredSkills.join(', ')}
+		  - Om företaget: ${data.about[0]}
+		  - Plats: ${data.location[0]}
+		  - Anställningsform: ${data.employmentType[0]}
+		  - Sista ansökningsdag: ${data.applyDay[0]}
+		  - Kontakt: ${data.contact[0]}
+		  - Extra information: ${data.extraInfo[0]}
+		  Skriv en kreativ och säljande jobbannons med modern ton och markdown (** för rubriker).
+		`;
+
+			try {
+				const response = await fetch('https://api.openai.com/v1/chat/completions', {
+					method: 'POST',
+					headers,
+					body: JSON.stringify({
+						model: 'gpt-4o-mini',
+						messages: [
+							{ role: 'system', content: 'Du är en modern rekryterare som skriver engagerande jobbannonser.' },
+							{ role: 'user', content: prompt },
+						],
+					}),
+				});
+
+				const result = await response.json();
+				let content = result.choices[0].message.content;
+				if (content.includes('```')) {
+					content = content.split('```')[1]; // Handles ```markdown or ```
+				}
+				return new Response(JSON.stringify({ listing: content }), {
+					headers: { 'Content-Type': 'application/json' },
+				});
+			} catch (error) {
+				return new Response(JSON.stringify({ error: 'API request failed', details: error.message }), {
+					status: 500,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+		}
+
+		return new Response(JSON.stringify({ error: 'Invalid endpoint' }), {
+			status: 404,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	},
+};
