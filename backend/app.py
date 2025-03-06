@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import json
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins for testing
+CORS(app, resources={r"/*": {"origins": "https://rescriber.com"}})
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -210,4 +210,5 @@ def update_style():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)  # Comment out for production
+    app.run()

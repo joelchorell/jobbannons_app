@@ -1,32 +1,20 @@
 export default {
-	async fetch(request, env) {
+	async fetch(request, env, ctx) {
 		const url = new URL(request.url);
 		const path = url.pathname;
 
-		const corsHeaders = {
-			'Access-Control-Allow-Origin': 'https://rescriber.com',
-			'Access-Control-Allow-Methods': 'POST, OPTIONS',
-			'Access-Control-Allow-Headers': 'Content-Type',
-		};
-
-		if (request.method === 'OPTIONS') {
-			return new Response(null, {
-				status: 204,
-				headers: corsHeaders,
-			});
-		}
-
 		if (request.method !== 'POST') {
-			return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+			return new Response(JSON.stringify({ error: 'Method not allowed' 
+}), {
 				status: 405,
-				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+				headers: { 'Content-Type': 'application/json' },
 			});
 		}
 
 		const data = await request.json();
 		const apiKey = env.API_KEY;
 		const headers = {
-			Authorization: `Bearer ${apiKey}`,
+			Authorization: `Bearer ${apiKey}`, // Space is optional but standard
 			'Content-Type': 'application/json',
 		};
 
@@ -35,7 +23,7 @@ export default {
 			if (!jobTitle) {
 				return new Response(JSON.stringify({ error: 'Ingen jobbtitel angiven' }), {
 					status: 400,
-					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					headers: { 'Content-Type': 'application/json' },
 				});
 			}
 
@@ -68,12 +56,12 @@ export default {
 					content = content.split('```json')[1].split('```')[0];
 				}
 				return new Response(content, {
-					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					headers: { 'Content-Type': 'application/json' },
 				});
 			} catch (error) {
 				return new Response(JSON.stringify({ error: 'API request failed', details: error.message }), {
 					status: 500,
-					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					headers: { 'Content-Type': 'application/json' },
 				});
 			}
 		}
@@ -92,7 +80,7 @@ export default {
 			) {
 				return new Response(JSON.stringify({ error: 'Missing required fields' }), {
 					status: 400,
-					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					headers: { 'Content-Type': 'application/json' },
 				});
 			}
 
@@ -126,22 +114,22 @@ export default {
 				const result = await response.json();
 				let content = result.choices[0].message.content;
 				if (content.includes('```')) {
-					content = content.split('```')[1];
+					content = content.split('```')[1]; // Handles ```markdown or ```
 				}
 				return new Response(JSON.stringify({ listing: content }), {
-					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					headers: { 'Content-Type': 'application/json' },
 				});
 			} catch (error) {
 				return new Response(JSON.stringify({ error: 'API request failed', details: error.message }), {
 					status: 500,
-					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					headers: { 'Content-Type': 'application/json' },
 				});
 			}
 		}
 
 		return new Response(JSON.stringify({ error: 'Invalid endpoint' }), {
 			status: 404,
-			headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			headers: { 'Content-Type': 'application/json' },
 		});
 	},
 };

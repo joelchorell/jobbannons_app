@@ -1,5 +1,5 @@
 // Configurable API base URL - replace with your Worker URL after wrangler deploy
-const API_BASE_URL = "https://rescriber-api.pvyxpxpfww.workers.dev";
+const API_BASE_URL = "https://api.rescriber.com";
 
 function autoExpandTextarea(element) {
   element.style.height = "auto";
