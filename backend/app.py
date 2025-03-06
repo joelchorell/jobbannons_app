@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import json
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://rescriber.com"}})
+CORS(app, resources={r"/*": {"origins": ["https://rescriber.com", "https://www.rescriber.com"]}})
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')

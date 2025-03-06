@@ -46,17 +46,6 @@ function autoExpandTextarea(element) {
     const sidebarItems = document.querySelectorAll(".sidebar-item");
     const contentSections = document.querySelectorAll(".content-section");
 
-    // Temporary test fetch - remove after testing
-    console.log("Testing Worker...");
-    fetch(`${API_BASE_URL}/generate-initial-data`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jobTitle: "Engineer" }),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log("Worker response:", data))
-      .catch((err) => console.error("Worker error:", err));
-
     // Sidebar navigation
     sidebarItems.forEach((item) => {
       item.addEventListener("click", function () {
