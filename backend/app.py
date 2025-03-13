@@ -1,12 +1,24 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
 import json
+from datetime import datetime
+import logging
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["https://rescriber.com", "https://www.rescriber.com"]}})
+
+# Initialize rate limiter
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="redis://localhost:6379",  # Use Redis for storage
+)
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -15,6 +27,16 @@ if not OPENAI_API_KEY:
 
 # Initialize the client
 client = OpenAI(api_key=OPENAI_API_KEY)
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('/var/log/rescriber/rate_limits.log'),
+        logging.StreamHandler()
+    ]
+)
 
 def generate_initial_data(job_title):
     try:
@@ -87,6 +109,7 @@ def generate_final_listing(data):
         raise Exception(f"Error generating final listing: {str(e)}")
 
 @app.route('/generate-initial-data', methods=['POST'])
+@limiter.limit("10 per minute")  # More restrictive limit for this endpoint
 def get_initial_data():
     try:
         data = request.json
@@ -102,10 +125,11 @@ def get_initial_data():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/generate-final-listing', methods=['POST'])
+@limiter.limit("5 per minute")  # More restrictive limit for this resource-intensive endpoint
 def get_final_listing():
     try:
         data = request.json
-        print("Received data:", data)  # Add this for debugging
+        print("Received data:", data)
         final_listing = generate_final_listing(data)
         return jsonify(final_listing)
         
@@ -149,6 +173,7 @@ def regenerate_style():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/update-style', methods=['POST'])
+@limiter.limit("10 per minute")
 def update_style():
     data = request.json
     text = data.get('text', '')
@@ -208,6 +233,39 @@ def update_style():
     except Exception as e:
         print(f"Error: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+# Add a health check endpoint (not rate limited)
+@app.route('/health', methods=['GET'])
+@limiter.exempt  # Exempt this endpoint from rate limiting
+def health_check():
+    return jsonify({
+        'status': 'ok',
+        'timestamp': datetime.now().isoformat()
+    })
+
+# Add this after_request handler
+@app.after_request
+def add_rate_limit_remaining(response):
+    try:
+        # Get current limit from Flask-Limiter if available
+        current_limit = getattr(request, '_rate_limiting_complete', False)
+        if current_limit and hasattr(current_limit, 'limit'):
+            endpoint = request.endpoint or 'unknown'
+            ip = request.remote_addr
+            
+            # Log the rate limit information
+            app.logger.info(
+                f"Rate limit for {ip} on {endpoint}: "
+                f"{current_limit.limit.remaining}/{current_limit.limit.amount} remaining"
+            )
+            
+            # Add rate limit headers to the response
+            response.headers.add('X-RateLimit-Limit', str(current_limit.limit.amount))
+            response.headers.add('X-RateLimit-Remaining', str(current_limit.limit.remaining))
+            response.headers.add('X-RateLimit-Reset', str(current_limit.reset_time))
+    except Exception as e:
+        app.logger.error(f"Error adding rate limit headers: {str(e)}")
+    return response
 
 if __name__ == '__main__':
     # app.run(debug=True)  # Comment out for production

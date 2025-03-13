@@ -155,6 +155,16 @@ function autoExpandTextarea(element) {
           body: JSON.stringify({ jobTitle }),
         });
 
+        if (response.status === 429) {
+          // Rate limit exceeded
+          const errorData = await response.json();
+          throw new Error(
+            `Rate limit exceeded: ${
+              errorData.message || "Too many requests. Please try again later."
+            }`
+          );
+        }
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(
@@ -620,6 +630,48 @@ function autoExpandTextarea(element) {
       `;
       document.head.appendChild(styleElement);
     }
+
+    // Add a mobile menu toggle function
+    function setupMobileNavigation() {
+      // Create mobile menu toggle button
+      const sidebarContainer = document.querySelector(".sidebar");
+      const mobileMenuToggle = document.createElement("button");
+      mobileMenuToggle.className = "mobile-menu-toggle";
+      mobileMenuToggle.innerHTML = "<span>☰</span> Meny";
+
+      // Add it to the DOM before the sidebar
+      if (sidebarContainer && !document.querySelector(".mobile-menu-toggle")) {
+        sidebarContainer.parentNode.insertBefore(
+          mobileMenuToggle,
+          sidebarContainer
+        );
+
+        // Toggle sidebar visibility on mobile
+        mobileMenuToggle.addEventListener("click", function () {
+          sidebarContainer.classList.toggle("mobile-visible");
+          this.classList.toggle("active");
+        });
+
+        // Hide sidebar when a menu item is clicked
+        const sidebarItems = document.querySelectorAll(".sidebar-item");
+        sidebarItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            if (window.innerWidth <= 768) {
+              sidebarContainer.classList.remove("mobile-visible");
+              mobileMenuToggle.classList.remove("active");
+            }
+          });
+        });
+      }
+    }
+
+    // Call this function when the DOM is loaded
+    setupMobileNavigation();
+
+    // Re-run setup if window is resized
+    window.addEventListener("resize", function () {
+      setupMobileNavigation();
+    });
   });
 
   function markdownToHtml(text) {
