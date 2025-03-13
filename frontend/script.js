@@ -369,24 +369,62 @@ function autoExpandTextarea(element) {
       textarea.style.height = "42px";
     });
 
-    // Refactored add item handlers
-    function setupAddItemHandlers(section) {
-      const button = document.getElementById(`add${section}Button`);
-      const input = document.getElementById(`${section.toLowerCase()}Input`);
-      if (button && input) {
-        const addHandler = () =>
-          addItemToContainer(input, section.toLowerCase());
-        button.addEventListener("click", addHandler);
-        input.addEventListener("keypress", (e) => {
+    // Fix the add item handlers
+    function setupAddItemHandlers() {
+      // Setup for Tasks
+      const addTaskButton = document.getElementById("addTaskButton");
+      const tasksInput = document.getElementById("tasksInput");
+      if (addTaskButton && tasksInput) {
+        addTaskButton.addEventListener("click", function () {
+          addItemToContainer(tasksInput, "tasks");
+        });
+        tasksInput.addEventListener("keypress", function (e) {
           if (e.key === "Enter") {
             e.preventDefault();
-            addHandler();
+            addItemToContainer(tasksInput, "tasks");
+          }
+        });
+      }
+
+      // Setup for Requirements
+      const addRequirementButton = document.getElementById(
+        "addRequirementButton"
+      );
+      const requirementsInput = document.getElementById("requirementsInput");
+      if (addRequirementButton && requirementsInput) {
+        addRequirementButton.addEventListener("click", function () {
+          addItemToContainer(requirementsInput, "requirements");
+        });
+        requirementsInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addItemToContainer(requirementsInput, "requirements");
+          }
+        });
+      }
+
+      // Setup for Preferred Skills
+      const addPreferredSkillButton = document.getElementById(
+        "addPreferredSkillButton"
+      );
+      const preferredSkillsInput = document.getElementById(
+        "preferredSkillsInput"
+      );
+      if (addPreferredSkillButton && preferredSkillsInput) {
+        addPreferredSkillButton.addEventListener("click", function () {
+          addItemToContainer(preferredSkillsInput, "preferredSkills");
+        });
+        preferredSkillsInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addItemToContainer(preferredSkillsInput, "preferredSkills");
           }
         });
       }
     }
 
-    ["Tasks", "Requirement", "PreferredSkill"].forEach(setupAddItemHandlers);
+    // Call the setup function
+    setupAddItemHandlers();
 
     function addItemToContainer(inputElement, containerId) {
       const value = inputElement.value.trim();
