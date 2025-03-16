@@ -2,7 +2,10 @@
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>JobbAI | Skapa din jobbannons</title>
     <link rel="stylesheet" href="styles.css" />
     <link
@@ -16,9 +19,6 @@
         <a href="index.html" class="logo">JobbAI</a>
         <nav>
           <ul>
-            <li><a href="index.html#features">Funktioner</a></li>
-            <li><a href="index.html#how-it-works">Hur det fungerar</a></li>
-            <li><a href="index.html#pricing">Priser</a></li>
             <li>
               <a href="index.html" class="nav-link">Tillbaka till startsidan</a>
             </li>
@@ -28,333 +28,521 @@
     </header>
 
     <div class="app-container">
-      <form id="jobForm">
-        <h2>Skapa din jobbannons</h2>
+      <div class="container">
+        <h1>Skapa din jobbannons</h1>
         <p class="subtitle">
           Fyll i informationen nedan för att generera en professionell
           jobbannons
         </p>
 
-        <div class="sidebar-layout">
-          <!-- Sidebar navigation -->
-          <div class="sidebar">
-            <div class="sidebar-item active" data-section="jobTitle">
-              <span class="sidebar-icon">📋</span>
-              <span class="sidebar-text">Jobbtitel</span>
-            </div>
-            <div class="sidebar-item" data-section="company">
-              <span class="sidebar-icon">🏢</span>
-              <span class="sidebar-text">Om företaget</span>
-            </div>
-            <div class="sidebar-item" data-section="jobDetails">
-              <span class="sidebar-icon">📝</span>
-              <span class="sidebar-text">Arbetsuppgifter</span>
-            </div>
-            <div class="sidebar-item" data-section="requirements">
-              <span class="sidebar-icon">✅</span>
-              <span class="sidebar-text">Kvalifikationer</span>
-            </div>
-            <div class="sidebar-item" data-section="preferredSkills">
-              <span class="sidebar-icon">🌟</span>
-              <span class="sidebar-text">Meriterande</span>
-            </div>
-            <div class="sidebar-item" data-section="details">
-              <span class="sidebar-icon">📌</span>
-              <span class="sidebar-text">Detaljer</span>
-            </div>
-            <div class="sidebar-item" data-section="extraInfo">
-              <span class="sidebar-icon">ℹ️</span>
-              <span class="sidebar-text">Extra info</span>
-            </div>
-
-            <!-- Add a spacer to push the generate button to the bottom -->
-            <div class="sidebar-spacer"></div>
-
-            <!-- Make the entire area a button -->
-            <button
-              type="button"
-              id="generateFinalButton"
-              class="sidebar-generate"
-            >
-              <span class="button-icon">✨</span> Generera Annons
-            </button>
+        <!-- Progress bar -->
+        <div class="progress-bar">
+          <div class="progress-step active" data-step="1">
+            1
+            <span class="progress-label">Titel</span>
           </div>
-
-          <!-- Content area -->
-          <div class="content-area">
-            <div class="loading-overlay" id="loadingOverlay">
-              <div class="spinner"></div>
-              <p class="loading-text">Genererar förslag...</p>
-            </div>
-
-            <div class="content-header">
-              <button
-                type="button"
-                id="resetButton"
-                class="reset-button"
-                style="display: none"
-              >
-                <span class="reset-icon">↺</span> Börja om
-              </button>
-            </div>
-
-            <!-- Job Title Section -->
-            <div class="content-section active" id="jobTitle-section">
-              <p class="explanation-text">
-                Här väljer du jobbtitel och därefter genereras anpassade förslag
-                på arbetsuppgifter, kvalifikationer och meriterande egenskaper.
-              </p>
-
-              <div class="title-box predefined">
-                <h3>Välj jobbtitel</h3>
-                <p class="section-description">
-                  Välj en fördefinierad titel för att generera relevanta
-                  arbetsuppgifter och kvalifikationer.
-                </p>
-
-                <div class="styled-select">
-                  <select id="jobTitle" required>
-                    <option value="" disabled selected>Välj titel</option>
-                    <option value="Projektledare">Projektledare</option>
-                    <option value="Marknadsförare">Marknadsförare</option>
-                    <option value="UX Designer">UX Designer</option>
-                    <option value="Ekonomichef">Ekonomichef</option>
-                    <option value="Systemutvecklare">Systemutvecklare</option>
-                    <option value="IT-konsult">IT-konsult</option>
-                    <option value="HR-konsult">HR-konsult</option>
-                    <option value="Försäljningschef">Försäljningschef</option>
-                    <option value="Försäljningsansvarig">
-                      Försäljningsansvarig
-                    </option>
-                  </select>
-                  <div class="select-arrow">▾</div>
-                </div>
-              </div>
-
-              <div class="divider">
-                <span>eller</span>
-              </div>
-
-              <div class="title-box custom">
-                <h3>Ange egen titel</h3>
-                <p class="section-description">
-                  Skriv in en egen jobbtitel och klicka på "Generera" för att
-                  skapa anpassade förslag.
-                </p>
-
-                <div class="custom-title-container">
-                  <input
-                    type="text"
-                    id="customTitle"
-                    placeholder="T.ex. UX Designer, Ekonomichef, Systemutvecklare..."
-                  />
-                  <button
-                    type="button"
-                    id="generateCustom"
-                    class="cta-button generate-button"
-                  >
-                    Generera
-                  </button>
-                </div>
-              </div>
-
-              <div id="errorMessage" class="error-message"></div>
-              <div class="loading-container">
-                <p class="loading">Genererar förslag...</p>
-              </div>
-              <div
-                class="success-message"
-                id="suggestionsGenerated"
-                style="display: none"
-              >
-                <div class="success-icon">✓</div>
-                <div class="success-text">
-                  <p>Förslag finns nu genererade!</p>
-                  <p class="next-step">Gå vidare till nästa steg →</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Company Section -->
-            <div class="content-section" id="company-section">
-              <div class="content-box">
-                <h3>Om företaget</h3>
-                <div id="about"></div>
-                <textarea
-                  id="aboutInput"
-                  placeholder="Beskriv företaget, dess verksamhet och företagskultur.."
-                ></textarea>
-              </div>
-
-              <div class="content-box">
-                <h3>Plats/Ort</h3>
-                <div id="location"></div>
-                <textarea
-                  id="locationInput"
-                  placeholder="T.ex. Stockholm, Göteborg, Remote..."
-                ></textarea>
-              </div>
-            </div>
-
-            <!-- Job Details Section -->
-            <div class="content-section" id="jobDetails-section">
-              <div class="content-box">
-                <h3>Arbetsuppgifter</h3>
-                <div id="tasks" class="checkbox-container"></div>
-                <div class="add-item-container">
-                  <textarea
-                    id="tasksInput"
-                    placeholder="Lägg till relevanta arbetsuppgifter"
-                  ></textarea>
-                  <button type="button" class="add-button" id="addTaskButton">
-                    Lägg till
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Requirements Section -->
-            <div class="content-section" id="requirements-section">
-              <div class="content-box">
-                <h3>Kvalifikationer</h3>
-                <div id="requirements" class="checkbox-container"></div>
-                <div class="add-item-container">
-                  <textarea
-                    id="requirementsInput"
-                    placeholder="Lägg till kvalifikationer"
-                  ></textarea>
-                  <button
-                    type="button"
-                    class="add-button"
-                    id="addRequirementButton"
-                  >
-                    Lägg till
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Preferred Skills Section -->
-            <div class="content-section" id="preferredSkills-section">
-              <div class="content-box">
-                <h3>Meriterande egenskaper</h3>
-                <div id="preferredSkills" class="checkbox-container"></div>
-                <div class="add-item-container">
-                  <textarea
-                    id="preferredSkillsInput"
-                    placeholder="Lägg till egen meriterande egenskaper"
-                  ></textarea>
-                  <button
-                    type="button"
-                    class="add-button"
-                    id="addPreferredSkillButton"
-                  >
-                    Lägg till
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Details Section -->
-            <div class="content-section" id="details-section">
-              <div class="content-box">
-                <h3>Anställningsform</h3>
-                <div id="employmentType"></div>
-                <textarea
-                  id="employmentTypeInput"
-                  class="single-line"
-                  placeholder="T.ex. Heltid, Deltid, Projektanställning..."
-                ></textarea>
-              </div>
-
-              <div class="content-box">
-                <h3>Sista ansökningsdag</h3>
-                <div id="applyDay"></div>
-                <textarea
-                  id="applyDayInput"
-                  class="single-line"
-                  placeholder="T.ex. 30 juni 2025"
-                ></textarea>
-              </div>
-
-              <div class="content-box">
-                <h3>Kontaktinformation</h3>
-                <div id="contact"></div>
-                <textarea
-                  id="contactInput"
-                  class="single-line"
-                  placeholder="T.ex. För frågor kontakta Anna Andersson, anna@example.com"
-                ></textarea>
-              </div>
-            </div>
-
-            <!-- Extra Info Section -->
-            <div class="content-section" id="extraInfo-section">
-              <p class="explanation-text">
-                Här skriver du in om det finns extra information som behövs för
-                annonsen. Det kan vara att trycka på någon särskild
-                arbetsuppgift eller egenskap, något särskilt du vill ha med i
-                annonsen.
-              </p>
-
-              <div class="content-box">
-                <h3>Extra information</h3>
-                <div id="extraInfo"></div>
-                <textarea
-                  id="extraInfoInput"
-                  placeholder="Lägg till eventuell extra information"
-                ></textarea>
-              </div>
-            </div>
+          <div class="progress-step" data-step="2">
+            2
+            <span class="progress-label">Företag</span>
+          </div>
+          <div class="progress-step" data-step="3">
+            3
+            <span class="progress-label">Uppgifter</span>
+          </div>
+          <div class="progress-step" data-step="4">
+            4
+            <span class="progress-label">Krav</span>
+          </div>
+          <div class="progress-step" data-step="5">
+            5
+            <span class="progress-label">Detaljer</span>
           </div>
         </div>
 
-        <div class="generated-content">
-          <h3>Genererad Jobbannons</h3>
-          <div
-            id="richTextEditor"
-            class="rich-text-editor"
-            contenteditable="true"
-          ></div>
-          <textarea id="generatedText" class="hidden"></textarea>
-          <div class="style-guidance">
-            <p>
-              Du kan redigera texten ovan och sedan använda knapparna nedan för
-              att ändra stil på texten.
-            </p>
+        <form id="jobForm">
+          <div class="app-layout">
+            <!-- Sidebar for desktop -->
+            <div class="sidebar">
+              <div class="sidebar-items">
+                <div class="sidebar-item active" data-section="jobTitle">
+                  <span class="sidebar-icon">📋</span>
+                  <span>Jobbtitel</span>
+                </div>
+                <div class="sidebar-item" data-section="company">
+                  <span class="sidebar-icon">🏢</span>
+                  <span>Om företaget</span>
+                </div>
+                <div class="sidebar-item" data-section="jobDetails">
+                  <span class="sidebar-icon">📝</span>
+                  <span>Arbetsuppgifter</span>
+                </div>
+                <div class="sidebar-item" data-section="requirements">
+                  <span class="sidebar-icon">✅</span>
+                  <span>Kvalifikationer</span>
+                </div>
+                <div class="sidebar-item" data-section="preferredSkills">
+                  <span class="sidebar-icon">🌟</span>
+                  <span>Meriterande</span>
+                </div>
+                <div class="sidebar-item" data-section="details">
+                  <span class="sidebar-icon">📌</span>
+                  <span>Detaljer</span>
+                </div>
+                <div class="sidebar-item" data-section="extraInfo">
+                  <span class="sidebar-icon">ℹ️</span>
+                  <span>Extra info</span>
+                </div>
+              </div>
+
+              <div class="sidebar-footer">
+                <button
+                  type="button"
+                  id="generateFinalButton"
+                  class="btn btn-primary btn-block"
+                >
+                  Generera Annons
+                </button>
+              </div>
+            </div>
+
+            <!-- Main content area -->
+            <div class="content-area">
+              <!-- Loading overlay -->
+              <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <p class="loading-text">Genererar förslag...</p>
+              </div>
+
+              <!-- Job Title Section -->
+              <section id="jobTitle-section" class="section active">
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="card-title">Välj jobbtitel</h2>
+                  </div>
+                  <div class="card-body">
+                    <p>
+                      Välj en fördefinierad titel eller ange en egen för att
+                      generera relevanta arbetsuppgifter och kvalifikationer.
+                    </p>
+
+                    <div class="form-group">
+                      <label class="form-label">Välj från listan</label>
+                      <select id="jobTitle" class="form-control">
+                        <option value="" disabled selected>Välj titel</option>
+                        <option value="Projektledare">Projektledare</option>
+                        <option value="Marknadsförare">Marknadsförare</option>
+                        <option value="UX Designer">UX Designer</option>
+                        <option value="Ekonomichef">Ekonomichef</option>
+                        <option value="Systemutvecklare">
+                          Systemutvecklare
+                        </option>
+                        <option value="IT-konsult">IT-konsult</option>
+                        <option value="HR-konsult">HR-konsult</option>
+                        <option value="Försäljningschef">
+                          Försäljningschef
+                        </option>
+                        <option value="Försäljningsansvarig">
+                          Försäljningsansvarig
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Eller ange egen titel</label>
+                      <div class="add-item-container">
+                        <input
+                          type="text"
+                          id="customTitle"
+                          class="form-control"
+                          placeholder="T.ex. UX Designer, Ekonomichef..."
+                        />
+                        <button
+                          type="button"
+                          id="generateCustom"
+                          class="btn btn-primary"
+                        >
+                          Generera
+                        </button>
+                      </div>
+                    </div>
+
+                    <div
+                      id="errorMessage"
+                      class="error-message"
+                      style="display: none"
+                    ></div>
+
+                    <div
+                      id="jobTitleSuccess"
+                      class="success-message"
+                      style="display: none"
+                    >
+                      <div class="success-icon">✓</div>
+                      <div class="success-text">
+                        <p>
+                          Du har valt: <strong class="title-display"></strong>
+                        </p>
+                        <a class="reset-link">Börja om</a>
+                      </div>
+                    </div>
+
+                    <div
+                      id="suggestionsGenerated"
+                      class="success-message"
+                      style="display: none"
+                    >
+                      <div class="success-icon">✓</div>
+                      <div class="success-text">
+                        <p>Förslag finns nu genererade!</p>
+                        <a class="next-step">Gå vidare till nästa steg →</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Company Section -->
+              <section id="company-section" class="section">
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="card-title">Om företaget</h2>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label class="form-label">Beskriv företaget</label>
+                      <textarea
+                        id="aboutInput"
+                        class="form-control"
+                        placeholder="Beskriv företaget, dess verksamhet och företagskultur.."
+                      ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Plats/Ort</label>
+                      <input
+                        type="text"
+                        id="locationInput"
+                        class="form-control"
+                        placeholder="T.ex. Stockholm, Göteborg, Remote..."
+                      />
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Job Details Section -->
+              <section id="tasks-section" class="section">
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="card-title">Arbetsuppgifter</h2>
+                  </div>
+                  <div class="card-body">
+                    <p>Välj relevanta arbetsuppgifter för tjänsten.</p>
+
+                    <div id="tasks" class="checkbox-group"></div>
+
+                    <div class="form-group">
+                      <label class="form-label">Lägg till arbetsuppgift</label>
+                      <div class="add-item-container">
+                        <input
+                          type="text"
+                          id="tasksInput"
+                          class="form-control"
+                          placeholder="Skriv en arbetsuppgift"
+                        />
+                        <button
+                          type="button"
+                          id="addTaskButton"
+                          class="btn btn-secondary"
+                        >
+                          Lägg till
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Qualifications Section (Combined for mobile) -->
+              <section id="qualifications-section" class="section">
+                <div class="mobile-tabs">
+                  <div class="mobile-tab active" data-tab="requirements">
+                    Kvalifikationer
+                  </div>
+                  <div class="mobile-tab" data-tab="preferredSkills">
+                    Meriterande
+                  </div>
+                </div>
+
+                <div class="mobile-tab-content active" id="requirements-tab">
+                  <div class="card">
+                    <div class="card-header">
+                      <h2 class="card-title">Kvalifikationer</h2>
+                    </div>
+                    <div class="card-body">
+                      <p>Välj relevanta kvalifikationer för tjänsten.</p>
+
+                      <div id="requirements" class="checkbox-group"></div>
+
+                      <div class="form-group">
+                        <label class="form-label"
+                          >Lägg till kvalifikation</label
+                        >
+                        <div class="add-item-container">
+                          <input
+                            type="text"
+                            id="requirementsInput"
+                            class="form-control"
+                            placeholder="Skriv en kvalifikation"
+                          />
+                          <button
+                            type="button"
+                            id="addRequirementButton"
+                            class="btn btn-secondary"
+                          >
+                            Lägg till
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mobile-tab-content" id="preferredSkills-tab">
+                  <div class="card">
+                    <div class="card-header">
+                      <h2 class="card-title">Meriterande egenskaper</h2>
+                    </div>
+                    <div class="card-body">
+                      <p>Välj meriterande egenskaper för tjänsten.</p>
+
+                      <div id="preferredSkills" class="checkbox-group"></div>
+
+                      <div class="form-group">
+                        <label class="form-label"
+                          >Lägg till meriterande egenskap</label
+                        >
+                        <div class="add-item-container">
+                          <input
+                            type="text"
+                            id="preferredSkillsInput"
+                            class="form-control"
+                            placeholder="Skriv en meriterande egenskap"
+                          />
+                          <button
+                            type="button"
+                            id="addPreferredSkillButton"
+                            class="btn btn-secondary"
+                          >
+                            Lägg till
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Details Section -->
+              <section id="details-section" class="section">
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="card-title">Detaljer</h2>
+                  </div>
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label class="form-label">Anställningsform</label>
+                      <input
+                        type="text"
+                        id="employmentTypeInput"
+                        class="form-control"
+                        placeholder="T.ex. Heltid, Deltid, Projektanställning..."
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Sista ansökningsdag</label>
+                      <input
+                        type="text"
+                        id="applyDayInput"
+                        class="form-control"
+                        placeholder="T.ex. 30 juni 2025"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Kontaktinformation</label>
+                      <input
+                        type="text"
+                        id="contactInput"
+                        class="form-control"
+                        placeholder="T.ex. För frågor kontakta Anna Andersson, anna@example.com"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Extra information</label>
+                      <textarea
+                        id="extraInfoInput"
+                        class="form-control"
+                        placeholder="Lägg till eventuell extra information"
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div class="card-footer">
+                    <button
+                      type="button"
+                      id="mobileGenerateButton"
+                      class="btn btn-primary btn-block"
+                    >
+                      Generera Annons
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Mobile step navigation -->
+              <div class="mobile-step-nav">
+                <button
+                  type="button"
+                  id="prevStepBtn"
+                  class="btn btn-secondary"
+                >
+                  Föregående
+                </button>
+                <button type="button" id="nextStepBtn" class="btn btn-primary">
+                  Nästa
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="style-buttons">
-            <button type="button" id="professionalBtn">
-              <span class="emoji">👔</span>
-              <span class="button-text">Mer professionell</span>
-            </button>
-            <button type="button" id="joyfulBtn">
-              <span class="emoji">😊</span>
-              <span class="button-text">Mer lättsam</span>
-            </button>
-            <button type="button" id="conciseBtn">
-              <span class="emoji">🤏</span>
-              <span class="button-text">Mer koncis</span>
-            </button>
+
+          <!-- Generated Content -->
+          <div class="generated-content" id="generatedContent">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Din genererade jobbannons</h2>
+              </div>
+              <div class="card-body">
+                <div
+                  id="richTextEditor"
+                  class="rich-text-editor"
+                  contenteditable="true"
+                ></div>
+                <textarea id="generatedText" class="hidden"></textarea>
+
+                <div class="form-group">
+                  <label class="form-label">Ändra stil på texten</label>
+                  <div class="style-buttons">
+                    <button
+                      type="button"
+                      id="professionalBtn"
+                      class="style-button"
+                    >
+                      <span class="style-button-emoji">👔</span>
+                      <span>Mer professionell</span>
+                    </button>
+                    <button type="button" id="joyfulBtn" class="style-button">
+                      <span class="style-button-emoji">😊</span>
+                      <span>Mer lättsam</span>
+                    </button>
+                    <button type="button" id="conciseBtn" class="style-button">
+                      <span class="style-button-emoji">🤏</span>
+                      <span>Mer koncis</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button
+                  type="button"
+                  id="copyButton"
+                  class="btn btn-primary btn-block"
+                >
+                  Kopiera text
+                </button>
+              </div>
+            </div>
           </div>
-          <button type="button" id="copyButton" class="cta-button">
-            Kopiera text
+        </form>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav">
+      <div class="mobile-nav-items">
+        <div class="mobile-nav-item" data-section="jobTitle">
+          <a class="mobile-nav-link active">
+            <span class="mobile-nav-icon">📋</span>
+            <span>Titel</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item" data-section="company">
+          <a class="mobile-nav-link">
+            <span class="mobile-nav-icon">🏢</span>
+            <span>Företag</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item" data-section="tasks">
+          <a class="mobile-nav-link">
+            <span class="mobile-nav-icon">📝</span>
+            <span>Uppgifter</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item" data-section="qualifications">
+          <a class="mobile-nav-link">
+            <span class="mobile-nav-icon">✅</span>
+            <span>Krav</span>
+          </a>
+        </div>
+        <div class="mobile-nav-item" data-section="details">
+          <a class="mobile-nav-link">
+            <span class="mobile-nav-icon">📌</span>
+            <span>Detaljer</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Validation Popup -->
+    <div class="popup" id="validationPopup">
+      <div class="popup-content">
+        <span class="popup-close">&times;</span>
+        <h3 class="popup-title">Är du säker?</h3>
+        <p>
+          För att skapa en så bra jobbannons som möjligt behöver du fylla i mer
+          information:
+        </p>
+        <ul id="missingFieldsList"></ul>
+        <p class="form-text">
+          Du kan fortsätta ändå, men kvaliteten på annonsen blir bättre med
+          komplett information.
+        </p>
+        <div class="popup-footer">
+          <button type="button" id="continueAnyway" class="btn btn-secondary">
+            Fortsätt ändå
+          </button>
+          <button type="button" id="fillMissingInfo" class="btn btn-primary">
+            Fyll i information
           </button>
         </div>
-      </form>
+      </div>
     </div>
 
     <footer>
       <div class="container">
         <div class="footer-content">
-          <div class="footer-logo">JobbAI</div>
+          <div>
+            <div class="footer-logo">JobbAI</div>
+            <p>Skapa professionella jobbannonser med AI</p>
+          </div>
           <div class="footer-links">
             <div class="footer-column">
               <h4>Produkt</h4>
               <ul>
                 <li><a href="index.html#features">Funktioner</a></li>
                 <li><a href="index.html#pricing">Priser</a></li>
-                <li><a href="#">API</a></li>
               </ul>
             </div>
             <div class="footer-column">
@@ -362,23 +550,6 @@
               <ul>
                 <li><a href="#">Om oss</a></li>
                 <li><a href="#">Kontakt</a></li>
-                <li><a href="#">Karriär</a></li>
-              </ul>
-            </div>
-            <div class="footer-column">
-              <h4>Resurser</h4>
-              <ul>
-                <li><a href="#">Blogg</a></li>
-                <li><a href="#">Support</a></li>
-                <li><a href="#">Dokumentation</a></li>
-              </ul>
-            </div>
-            <div class="footer-column">
-              <h4>Juridiskt</h4>
-              <ul>
-                <li><a href="#">Integritetspolicy</a></li>
-                <li><a href="#">Användarvillkor</a></li>
-                <li><a href="#">Cookies</a></li>
               </ul>
             </div>
           </div>
@@ -388,34 +559,6 @@
         </div>
       </div>
     </footer>
-
-    <div id="validationPopup" class="popup">
-      <div class="popup-content">
-        <span class="close-popup">&times;</span>
-        <h3>Är du säker?</h3>
-        <p>
-          För att skapa en så bra jobbannons som möjligt behöver du fylla i mer
-          information:
-        </p>
-        <ul id="missingFieldsList"></ul>
-        <p class="popup-note">
-          Du kan fortsätta ändå, men kvaliteten på annonsen blir bättre med
-          komplett information.
-        </p>
-        <div class="popup-buttons">
-          <button
-            type="button"
-            id="continueAnyway"
-            class="cta-button secondary"
-          >
-            Fortsätt ändå
-          </button>
-          <button type="button" id="fillMissingInfo" class="cta-button">
-            Fyll i information
-          </button>
-        </div>
-      </div>
-    </div>
 
     <script src="script.js"></script>
   </body>
