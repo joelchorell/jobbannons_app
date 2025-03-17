@@ -984,5 +984,16 @@ function autoExpandTextarea(element) {
 
       return text;
     }
+
+    // Make some functions available globally so they can be called from auth and saved-jobs modules
+    window.updateEmptySectionMessages = updateEmptySectionMessages;
+    window.resetJobTitleSelection = resetJobTitleSelection;
+    window.markdownToHtml = markdownToHtml;
+    window.showError = showError;
+    window.showSuccess = function (message) {
+      alert(message); // Simple implementation - replace with better UI if needed
+    };
+    window.showLoadingOverlay = showLoadingOverlay;
+    window.hideLoadingOverlay = hideLoadingOverlay;
   });
 })();

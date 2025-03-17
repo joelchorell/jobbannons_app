@@ -22,6 +22,7 @@
             <li>
               <a href="index.html" class="nav-link">Tillbaka till startsidan</a>
             </li>
+            <li><a href="#" class="nav-link login-button">Logga in</a></li>
           </ul>
         </nav>
       </div>
@@ -488,12 +489,16 @@
                 </div>
               </div>
               <div class="card-footer">
+                <button type="button" id="copyButton" class="btn btn-primary">
+                  Kopiera text
+                </button>
                 <button
                   type="button"
-                  id="copyButton"
-                  class="btn btn-primary btn-block"
+                  id="saveJobBtn"
+                  class="btn btn-secondary requires-auth"
+                  style="display: none"
                 >
-                  Kopiera text
+                  Spara annons
                 </button>
               </div>
             </div>
@@ -588,5 +593,94 @@
     </footer>
 
     <script src="script.js"></script>
+
+    <!-- Auth and saved jobs modules -->
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/saved-jobs.js"></script>
+
+    <!-- Add this before the closing body tag -->
+    <div class="popup" id="loginPopup">
+      <div class="popup-content">
+        <span class="popup-close">&times;</span>
+        <h3 class="popup-title">Logga in på JobbAI</h3>
+
+        <div class="auth-tabs">
+          <div class="auth-tab active" data-tab="login">Logga in</div>
+          <div class="auth-tab" data-tab="register">Skapa konto</div>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form active">
+          <div class="form-group">
+            <label class="form-label">E-post</label>
+            <input type="email" class="form-control" id="loginEmail" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lösenord</label>
+            <input
+              type="password"
+              class="form-control"
+              id="loginPassword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <a href="#" id="forgotPassword" class="form-text"
+              >Glömt lösenord?</a
+            >
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            Logga in
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form" style="display: none">
+          <div class="form-group">
+            <label class="form-label">Namn</label>
+            <input
+              type="text"
+              class="form-control"
+              id="registerName"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-post</label>
+            <input
+              type="email"
+              class="form-control"
+              id="registerEmail"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Företag</label>
+            <input type="text" class="form-control" id="registerCompany" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lösenord</label>
+            <input
+              type="password"
+              class="form-control"
+              id="registerPassword"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            Skapa konto
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for saved jobs -->
+    <div class="popup" id="savedJobsModal">
+      <div class="popup-content">
+        <span class="popup-close">&times;</span>
+        <div id="savedJobsContent"></div>
+      </div>
+    </div>
   </body>
 </html>
