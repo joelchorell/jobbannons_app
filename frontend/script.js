@@ -129,6 +129,36 @@ function autoExpandTextarea(element) {
       });
     }
 
+    // Initialize empty state messages
+    updateEmptySectionMessages();
+
+    function updateEmptySectionMessages() {
+      // Get the empty message elements
+      const tasksEmptyMessage = document.getElementById("tasks-empty-message");
+      const requirementsEmptyMessage = document.getElementById(
+        "requirements-empty-message"
+      );
+      const preferredSkillsEmptyMessage = document.getElementById(
+        "preferredSkills-empty-message"
+      );
+
+      // Check if containers have content
+      if (tasksEmptyMessage && containers.tasks) {
+        tasksEmptyMessage.style.display =
+          containers.tasks.children.length > 0 ? "none" : "block";
+      }
+
+      if (requirementsEmptyMessage && containers.requirements) {
+        requirementsEmptyMessage.style.display =
+          containers.requirements.children.length > 0 ? "none" : "block";
+      }
+
+      if (preferredSkillsEmptyMessage && containers.preferredSkills) {
+        preferredSkillsEmptyMessage.style.display =
+          containers.preferredSkills.children.length > 0 ? "none" : "block";
+      }
+    }
+
     function initMobileTabs() {
       // Handle mobile tab clicks
       mobileTabs.forEach((tab) => {
@@ -534,6 +564,19 @@ function autoExpandTextarea(element) {
         titleDisplay.textContent = jobTitle;
         jobTitleSuccess.style.display = "block";
 
+        // Hide job title input fields
+        const jobTitleSelect = document.getElementById("jobTitle");
+        const customTitleInput = document.getElementById("customTitle");
+        const generateCustomBtn = document.getElementById("generateCustom");
+        const titleFormGroups = document.querySelectorAll(
+          "#jobTitle-section .form-group"
+        );
+
+        // Hide the form groups containing the inputs
+        titleFormGroups.forEach((group) => {
+          group.style.display = "none";
+        });
+
         // Make API request
         const response = await fetch(`${API_BASE_URL}/generate-initial-data`, {
           method: "POST",
@@ -576,9 +619,20 @@ function autoExpandTextarea(element) {
 
         // Update sidebar items to show they have content
         updateSidebarItems();
+
+        // Update empty section messages
+        updateEmptySectionMessages();
       } catch (error) {
         console.error("Error details:", error);
         showError(`Ett fel uppstod: ${error.message}`);
+
+        // Show the form groups again in case of error
+        const titleFormGroups = document.querySelectorAll(
+          "#jobTitle-section .form-group"
+        );
+        titleFormGroups.forEach((group) => {
+          group.style.display = "block";
+        });
       } finally {
         hideLoadingOverlay();
       }
@@ -714,6 +768,9 @@ function autoExpandTextarea(element) {
             sidebarItem.classList.add("has-content");
           }
         }
+
+        // Update empty section messages
+        updateEmptySectionMessages();
       }
     }
 
@@ -729,12 +786,26 @@ function autoExpandTextarea(element) {
       );
       suggestionsGenerated.style.display = "none";
 
+      // Clear any error messages
+      clearError();
+
+      // Show job title input fields again
+      const titleFormGroups = document.querySelectorAll(
+        "#jobTitle-section .form-group"
+      );
+      titleFormGroups.forEach((group) => {
+        group.style.display = "block";
+      });
+
       // Clear checkbox containers
       Object.values(containers).forEach((container) => {
         if (container) {
           container.innerHTML = "";
         }
       });
+
+      // Update empty section messages
+      updateEmptySectionMessages();
     }
 
     function validateAndGenerate() {

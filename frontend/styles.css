@@ -939,6 +939,18 @@ select.form-control {
   flex: 1;
 }
 
+.reset-link {
+  color: var(--primary-color);
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: var(--spacing-xs);
+  display: inline-block;
+}
+
+.reset-link:hover {
+  text-decoration: underline;
+}
+
 .next-step {
   color: var(--primary-color);
   font-weight: 500;
@@ -1102,12 +1114,28 @@ footer {
   .mobile-step-nav {
     display: flex;
     justify-content: space-between;
-    margin-top: var(--spacing-lg);
-    position: sticky;
-    bottom: 60px;
-    background-color: var(--bg-white);
-    padding: var(--spacing-md);
+    padding: 1rem 0;
+    margin-top: 1rem;
     border-top: 1px solid var(--border-color);
-    z-index: 90;
   }
+
+  .mobile-step-nav button {
+    min-width: 120px; /* Set a minimum width for both buttons */
+    justify-content: center; /* Center the text */
+  }
+}
+
+/* Empty section message */
+.empty-section-message {
+  background-color: var(--bg-lighter);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  border-left: 3px solid var(--primary-color);
+}
+
+.empty-section-message p {
+  color: var(--text-light);
+  margin: 0;
+  font-size: var(--font-size-sm);
 }
