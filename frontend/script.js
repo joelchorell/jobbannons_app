@@ -21,7 +21,7 @@ function autoExpandTextarea(element) {
     const loadingIndicator = document.querySelector(".loading-overlay");
     const errorMessage = document.getElementById("errorMessage");
 
-    // Input containers
+    // Input containers - get all instances of these elements
     const containers = {
       tasks: document.getElementById("tasks"),
       requirements: document.getElementById("requirements"),
@@ -72,8 +72,7 @@ function autoExpandTextarea(element) {
     const sectionIds = [
       "jobTitle-section",
       "company-section",
-      "tasks-section",
-      "qualifications-section",
+      "content-section",
       "details-section",
     ];
 
@@ -95,6 +94,9 @@ function autoExpandTextarea(element) {
     // Initialize event listeners
     initEventListeners();
 
+    // Setup add item handlers
+    setupAddItemHandlers();
+
     // Functions
 
     function initMobileNavigation() {
@@ -107,8 +109,7 @@ function autoExpandTextarea(element) {
           const sectionMapping = {
             jobTitle: "jobTitle",
             company: "company",
-            tasks: "tasks",
-            qualifications: "qualifications",
+            content: "content",
             details: "details",
           };
 
@@ -157,6 +158,27 @@ function autoExpandTextarea(element) {
 
       // Next step button
       nextStepBtn.addEventListener("click", function () {
+        // If we're in the content section, navigate through tabs first
+        if (currentSectionIndex === 2) {
+          // content-section is index 2
+          const currentActiveTab = document.querySelector(".mobile-tab.active");
+          if (currentActiveTab) {
+            const tabId = currentActiveTab.getAttribute("data-tab");
+
+            // Define the tab order
+            const tabOrder = ["tasks", "requirements", "preferredSkills"];
+            const currentTabIndex = tabOrder.indexOf(tabId);
+
+            // If not on the last tab, go to next tab
+            if (currentTabIndex < tabOrder.length - 1) {
+              activateMobileTab(tabOrder[currentTabIndex + 1]);
+              return; // Exit the function to prevent section navigation
+            }
+            // If on the last tab, continue to next section
+          }
+        }
+
+        // Default behavior: go to next section
         if (currentSectionIndex < sectionIds.length - 1) {
           navigateToSectionByIndex(currentSectionIndex + 1);
         }
@@ -201,18 +223,20 @@ function autoExpandTextarea(element) {
           const sectionMapping = {
             jobTitle: "jobTitle",
             company: "company",
-            jobDetails: "tasks",
-            requirements: "qualifications",
-            preferredSkills: "qualifications",
+            jobDetails: "content",
+            requirements: "content",
+            preferredSkills: "content",
             details: "details",
             extraInfo: "details",
           };
 
           const mappedSectionId = sectionMapping[sectionId] || sectionId;
 
-          // For qualifications section, activate the correct tab
-          if (mappedSectionId === "qualifications") {
-            if (sectionId === "requirements") {
+          // For content section, activate the correct tab
+          if (mappedSectionId === "content") {
+            if (sectionId === "jobDetails") {
+              activateMobileTab("tasks");
+            } else if (sectionId === "requirements") {
               activateMobileTab("requirements");
             } else if (sectionId === "preferredSkills") {
               activateMobileTab("preferredSkills");
@@ -318,7 +342,7 @@ function autoExpandTextarea(element) {
     }
 
     function activateMobileTab(tabId) {
-      // Activate the correct tab in qualifications section
+      // Activate the correct tab in content section
       mobileTabs.forEach((tab) => {
         tab.classList.remove("active");
         if (tab.getAttribute("data-tab") === tabId) {
@@ -353,8 +377,7 @@ function autoExpandTextarea(element) {
         const sidebarMapping = {
           jobTitle: "jobTitle",
           company: "company",
-          tasks: "jobDetails",
-          qualifications: "requirements", // Default to requirements
+          content: "jobDetails", // Default to jobDetails for content section
           details: "details",
         };
 
@@ -402,9 +425,9 @@ function autoExpandTextarea(element) {
       const sectionMapping = {
         "Information om företaget": "company",
         "Plats/Ort": "company",
-        Arbetsuppgifter: "tasks",
-        Kvalifikationer: "qualifications",
-        "Meriterande egenskaper": "qualifications",
+        Arbetsuppgifter: "content",
+        Kvalifikationer: "content",
+        "Meriterande egenskaper": "content",
         Anställningsform: "details",
         "Sista ansökningsdag": "details",
         Kontaktinformation: "details",
@@ -415,9 +438,11 @@ function autoExpandTextarea(element) {
       if (sectionId) {
         navigateToSection(sectionId);
 
-        // For qualifications section, activate the correct tab
-        if (sectionId === "qualifications") {
-          if (fieldName === "Kvalifikationer") {
+        // For content section, activate the correct tab
+        if (sectionId === "content") {
+          if (fieldName === "Arbetsuppgifter") {
+            activateMobileTab("tasks");
+          } else if (fieldName === "Kvalifikationer") {
             activateMobileTab("requirements");
           } else if (fieldName === "Meriterande egenskaper") {
             activateMobileTab("preferredSkills");
@@ -458,9 +483,8 @@ function autoExpandTextarea(element) {
       const stepMapping = {
         jobTitle: 0,
         company: 1,
-        tasks: 2,
-        qualifications: 3,
-        details: 4,
+        content: 2,
+        details: 3,
       };
 
       const currentStep = stepMapping[sectionId] || 0;
@@ -583,6 +607,114 @@ function autoExpandTextarea(element) {
           sidebarItem.classList.add("has-content");
         }
       });
+    }
+
+    function setupAddItemHandlers() {
+      // Direct button click handlers for tasks
+      const tasksInput = document.getElementById("tasksInput");
+      const addTaskButton = document.getElementById("addTaskButton");
+
+      if (tasksInput && addTaskButton && containers.tasks) {
+        addTaskButton.addEventListener("click", function () {
+          addItemToContainer(tasksInput, containers.tasks);
+        });
+
+        tasksInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addItemToContainer(tasksInput, containers.tasks);
+          }
+        });
+      }
+
+      // Direct button click handlers for requirements
+      const requirementsInput = document.getElementById("requirementsInput");
+      const addRequirementButton = document.getElementById(
+        "addRequirementButton"
+      );
+
+      if (
+        requirementsInput &&
+        addRequirementButton &&
+        containers.requirements
+      ) {
+        addRequirementButton.addEventListener("click", function () {
+          addItemToContainer(requirementsInput, containers.requirements);
+        });
+
+        requirementsInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addItemToContainer(requirementsInput, containers.requirements);
+          }
+        });
+      }
+
+      // Direct button click handlers for preferred skills
+      const preferredSkillsInput = document.getElementById(
+        "preferredSkillsInput"
+      );
+      const addPreferredSkillButton = document.getElementById(
+        "addPreferredSkillButton"
+      );
+
+      if (
+        preferredSkillsInput &&
+        addPreferredSkillButton &&
+        containers.preferredSkills
+      ) {
+        addPreferredSkillButton.addEventListener("click", function () {
+          addItemToContainer(preferredSkillsInput, containers.preferredSkills);
+        });
+
+        preferredSkillsInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addItemToContainer(
+              preferredSkillsInput,
+              containers.preferredSkills
+            );
+          }
+        });
+      }
+    }
+
+    function addItemToContainer(inputElement, container) {
+      const value = inputElement.value.trim();
+      if (value) {
+        const itemId = value.replace(/\s+/g, "_");
+        const checkboxItem = document.createElement("div");
+        checkboxItem.className = "checkbox-item";
+
+        checkboxItem.innerHTML = `
+          <input type="checkbox" id="${itemId}" checked>
+          <label for="${itemId}">${value}</label>
+        `;
+
+        container.appendChild(checkboxItem);
+        inputElement.value = "";
+
+        console.log(`Added item "${value}" to container`, container);
+
+        // Update sidebar to show section has content
+        let sectionId;
+        if (container === containers.tasks) {
+          sectionId = "jobDetails";
+        } else if (container === containers.requirements) {
+          sectionId = "requirements";
+        } else if (container === containers.preferredSkills) {
+          sectionId = "preferredSkills";
+        }
+
+        if (sectionId) {
+          const sidebarItem = document.querySelector(
+            `.sidebar-item[data-section="${sectionId}"]`
+          );
+          if (sidebarItem) {
+            sidebarItem.classList.add("has-content");
+          }
+        }
+      }
     }
 
     function resetJobTitleSelection() {

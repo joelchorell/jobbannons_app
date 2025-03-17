@@ -47,14 +47,10 @@
           </div>
           <div class="progress-step" data-step="3">
             3
-            <span class="progress-label">Uppgifter</span>
+            <span class="progress-label">Innehåll</span>
           </div>
           <div class="progress-step" data-step="4">
             4
-            <span class="progress-label">Krav</span>
-          </div>
-          <div class="progress-step" data-step="5">
-            5
             <span class="progress-label">Detaljer</span>
           </div>
         </div>
@@ -213,7 +209,7 @@
                       <textarea
                         id="aboutInput"
                         class="form-control"
-                        placeholder="Beskriv företaget, dess verksamhet och företagskultur.."
+                        placeholder="Beskriv företaget själv, eller instruera AI: Beskriv IKEA..."
                       ></textarea>
                     </div>
 
@@ -230,43 +226,13 @@
                 </div>
               </section>
 
-              <!-- Job Details Section -->
-              <section id="tasks-section" class="section">
-                <div class="card">
-                  <div class="card-header">
-                    <h2 class="card-title">Arbetsuppgifter</h2>
-                  </div>
-                  <div class="card-body">
-                    <p>Välj relevanta arbetsuppgifter för tjänsten.</p>
-
-                    <div id="tasks" class="checkbox-group"></div>
-
-                    <div class="form-group">
-                      <label class="form-label">Lägg till arbetsuppgift</label>
-                      <div class="add-item-container">
-                        <input
-                          type="text"
-                          id="tasksInput"
-                          class="form-control"
-                          placeholder="Skriv en arbetsuppgift"
-                        />
-                        <button
-                          type="button"
-                          id="addTaskButton"
-                          class="btn btn-secondary"
-                        >
-                          Lägg till
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <!-- Qualifications Section (Combined for mobile) -->
-              <section id="qualifications-section" class="section">
+              <!-- Combined Content Section (Tasks, Requirements, Preferred Skills) -->
+              <section id="content-section" class="section">
                 <div class="mobile-tabs">
-                  <div class="mobile-tab active" data-tab="requirements">
+                  <div class="mobile-tab active" data-tab="tasks">
+                    Uppgifter
+                  </div>
+                  <div class="mobile-tab" data-tab="requirements">
                     Kvalifikationer
                   </div>
                   <div class="mobile-tab" data-tab="preferredSkills">
@@ -274,7 +240,43 @@
                   </div>
                 </div>
 
-                <div class="mobile-tab-content active" id="requirements-tab">
+                <!-- Tasks Tab Content -->
+                <div class="mobile-tab-content active" id="tasks-tab">
+                  <div class="card">
+                    <div class="card-header">
+                      <h2 class="card-title">Arbetsuppgifter</h2>
+                    </div>
+                    <div class="card-body">
+                      <p>Välj relevanta arbetsuppgifter för tjänsten.</p>
+
+                      <div id="tasks" class="checkbox-group"></div>
+
+                      <div class="form-group">
+                        <label class="form-label"
+                          >Lägg till arbetsuppgift</label
+                        >
+                        <div class="add-item-container">
+                          <input
+                            type="text"
+                            id="tasksInput"
+                            class="form-control"
+                            placeholder="Skriv en arbetsuppgift"
+                          />
+                          <button
+                            type="button"
+                            id="addTaskButton"
+                            class="btn btn-secondary"
+                          >
+                            Lägg till
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Requirements Tab Content -->
+                <div class="mobile-tab-content" id="requirements-tab">
                   <div class="card">
                     <div class="card-header">
                       <h2 class="card-title">Kvalifikationer</h2>
@@ -308,6 +310,7 @@
                   </div>
                 </div>
 
+                <!-- Preferred Skills Tab Content -->
                 <div class="mobile-tab-content" id="preferredSkills-tab">
                   <div class="card">
                     <div class="card-header">
@@ -484,16 +487,10 @@
             <span>Företag</span>
           </a>
         </div>
-        <div class="mobile-nav-item" data-section="tasks">
+        <div class="mobile-nav-item" data-section="content">
           <a class="mobile-nav-link">
             <span class="mobile-nav-icon">📝</span>
-            <span>Uppgifter</span>
-          </a>
-        </div>
-        <div class="mobile-nav-item" data-section="qualifications">
-          <a class="mobile-nav-link">
-            <span class="mobile-nav-icon">✅</span>
-            <span>Krav</span>
+            <span>Innehåll</span>
           </a>
         </div>
         <div class="mobile-nav-item" data-section="details">
