@@ -58,51 +58,9 @@
 
         <form id="jobForm">
           <div class="app-layout">
-            <!-- Sidebar for desktop -->
-            <div class="sidebar">
-              <div class="sidebar-items">
-                <div class="sidebar-item active" data-section="jobTitle">
-                  <span class="sidebar-icon">📋</span>
-                  <span>Jobbtitel</span>
-                </div>
-                <div class="sidebar-item" data-section="company">
-                  <span class="sidebar-icon">🏢</span>
-                  <span>Om företaget</span>
-                </div>
-                <div class="sidebar-item" data-section="jobDetails">
-                  <span class="sidebar-icon">📝</span>
-                  <span>Arbetsuppgifter</span>
-                </div>
-                <div class="sidebar-item" data-section="requirements">
-                  <span class="sidebar-icon">✅</span>
-                  <span>Kvalifikationer</span>
-                </div>
-                <div class="sidebar-item" data-section="preferredSkills">
-                  <span class="sidebar-icon">🌟</span>
-                  <span>Meriterande</span>
-                </div>
-                <div class="sidebar-item" data-section="details">
-                  <span class="sidebar-icon">📌</span>
-                  <span>Detaljer</span>
-                </div>
-                <div class="sidebar-item" data-section="extraInfo">
-                  <span class="sidebar-icon">ℹ️</span>
-                  <span>Extra info</span>
-                </div>
-              </div>
+            <!-- Sidebar removed for consistent navigation across devices -->
 
-              <div class="sidebar-footer">
-                <button
-                  type="button"
-                  id="generateFinalButton"
-                  class="btn btn-primary btn-block"
-                >
-                  Generera Annons
-                </button>
-              </div>
-            </div>
-
-            <!-- Main content area -->
+            <!-- Main content area - now full width -->
             <div class="content-area">
               <!-- Loading overlay -->
               <div class="loading-overlay" id="loadingOverlay">
@@ -447,6 +405,14 @@
                 </button>
                 <button type="button" id="nextStepBtn" class="btn btn-primary">
                   Nästa
+                </button>
+                <button
+                  type="button"
+                  id="generateFinalButton"
+                  class="btn btn-primary desktop-only"
+                  style="display: none"
+                >
+                  Generera Annons
                 </button>
               </div>
             </div>

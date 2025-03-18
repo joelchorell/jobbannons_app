@@ -50,7 +50,6 @@ function autoExpandTextarea(element) {
     const conciseBtn = document.getElementById("conciseBtn");
 
     // Navigation elements
-    const sidebarItems = document.querySelectorAll(".sidebar-item");
     const mobileNavItems = document.querySelectorAll(".mobile-nav-item");
     const sections = document.querySelectorAll(".section");
     const progressSteps = document.querySelectorAll(".progress-step");
@@ -181,6 +180,38 @@ function autoExpandTextarea(element) {
     function initStepNavigation() {
       // Previous step button
       prevStepBtn.addEventListener("click", function () {
+        // If we're in the content section, navigate through tabs first in reverse
+        if (currentSectionIndex === 2) {
+          // content-section is index 2
+          const currentActiveTab = document.querySelector(".mobile-tab.active");
+          if (currentActiveTab) {
+            const tabId = currentActiveTab.getAttribute("data-tab");
+
+            // Define the tab order
+            const tabOrder = ["tasks", "requirements", "preferredSkills"];
+            const currentTabIndex = tabOrder.indexOf(tabId);
+
+            // If not on the first tab, go to previous tab
+            if (currentTabIndex > 0) {
+              activateMobileTab(tabOrder[currentTabIndex - 1]);
+              return; // Exit the function to prevent section navigation
+            }
+            // If on the first tab, continue to previous section
+          }
+        }
+
+        // Special case: when going from details back to content
+        if (currentSectionIndex === 3) {
+          navigateToSectionByIndex(currentSectionIndex - 1);
+
+          // Manually activate the last tab (preferredSkills) after a small delay
+          setTimeout(() => {
+            activateMobileTab("preferredSkills");
+          }, 100);
+          return;
+        }
+
+        // Default behavior: go to previous section
         if (currentSectionIndex > 0) {
           navigateToSectionByIndex(currentSectionIndex - 1);
         }
@@ -244,39 +275,6 @@ function autoExpandTextarea(element) {
     }
 
     function initEventListeners() {
-      // Sidebar navigation
-      sidebarItems.forEach((item) => {
-        item.addEventListener("click", function () {
-          const sectionId = this.getAttribute("data-section");
-
-          // Map sidebar section IDs to mobile section IDs
-          const sectionMapping = {
-            jobTitle: "jobTitle",
-            company: "company",
-            jobDetails: "content",
-            requirements: "content",
-            preferredSkills: "content",
-            details: "details",
-            extraInfo: "details",
-          };
-
-          const mappedSectionId = sectionMapping[sectionId] || sectionId;
-
-          // For content section, activate the correct tab
-          if (mappedSectionId === "content") {
-            if (sectionId === "jobDetails") {
-              activateMobileTab("tasks");
-            } else if (sectionId === "requirements") {
-              activateMobileTab("requirements");
-            } else if (sectionId === "preferredSkills") {
-              activateMobileTab("preferredSkills");
-            }
-          }
-
-          navigateToSection(mappedSectionId);
-        });
-      });
-
       // Job title selection
       jobTitleSelect.addEventListener("change", function () {
         const jobTitle = this.value;
@@ -398,25 +396,11 @@ function autoExpandTextarea(element) {
       if (targetSection) {
         targetSection.classList.add("active");
 
-        // Update sidebar
-        sidebarItems.forEach((item) => {
-          item.classList.remove("active");
-        });
-
-        // Map mobile section IDs to sidebar section IDs
-        const sidebarMapping = {
-          jobTitle: "jobTitle",
-          company: "company",
-          content: "jobDetails", // Default to jobDetails for content section
-          details: "details",
-        };
-
-        const sidebarId = sidebarMapping[sectionId] || sectionId;
-        const sidebarItem = document.querySelector(
-          `.sidebar-item[data-section="${sidebarId}"]`
-        );
-        if (sidebarItem) {
-          sidebarItem.classList.add("active");
+        // Set default active tab when entering content section
+        if (sectionId === "content") {
+          // This default will be overridden if we're coming from details section
+          // in the prevStepBtn click handler
+          activateMobileTab("tasks");
         }
 
         // Update mobile navigation
@@ -436,18 +420,25 @@ function autoExpandTextarea(element) {
           if (mobileGenerateBtn) {
             mobileGenerateBtn.style.display = "block";
           }
+          if (generateFinalBtn) {
+            generateFinalBtn.style.display = "block";
+          }
         } else {
           if (mobileGenerateBtn) {
             mobileGenerateBtn.style.display = "none";
+          }
+          if (generateFinalBtn) {
+            generateFinalBtn.style.display = "none";
           }
         }
       }
     }
 
     function navigateToSectionByIndex(index) {
-      if (index >= 0 && index < sectionIds.length) {
-        const sectionId = sectionIds[index].replace("-section", "");
-        navigateToSection(sectionId);
+      const sections = ["jobTitle", "company", "content", "details"];
+      if (index >= 0 && index < sections.length) {
+        // Simply navigate to the section by its name
+        navigateToSection(sections[index]);
       }
     }
 
@@ -617,9 +608,6 @@ function autoExpandTextarea(element) {
         );
         suggestionsGenerated.style.display = "block";
 
-        // Update sidebar items to show they have content
-        updateSidebarItems();
-
         // Update empty section messages
         updateEmptySectionMessages();
       } catch (error) {
@@ -645,22 +633,6 @@ function autoExpandTextarea(element) {
           <label for="${text.replace(/\s+/g, "_")}">${text}</label>
         </div>
       `;
-    }
-
-    function updateSidebarItems() {
-      const sectionsToUpdate = [
-        "jobDetails",
-        "requirements",
-        "preferredSkills",
-      ];
-      sectionsToUpdate.forEach((section) => {
-        const sidebarItem = document.querySelector(
-          `.sidebar-item[data-section="${section}"]`
-        );
-        if (sidebarItem) {
-          sidebarItem.classList.add("has-content");
-        }
-      });
     }
 
     function setupAddItemHandlers() {
@@ -749,25 +721,6 @@ function autoExpandTextarea(element) {
         inputElement.value = "";
 
         console.log(`Added item "${value}" to container`, container);
-
-        // Update sidebar to show section has content
-        let sectionId;
-        if (container === containers.tasks) {
-          sectionId = "jobDetails";
-        } else if (container === containers.requirements) {
-          sectionId = "requirements";
-        } else if (container === containers.preferredSkills) {
-          sectionId = "preferredSkills";
-        }
-
-        if (sectionId) {
-          const sidebarItem = document.querySelector(
-            `.sidebar-item[data-section="${sectionId}"]`
-          );
-          if (sidebarItem) {
-            sidebarItem.classList.add("has-content");
-          }
-        }
 
         // Update empty section messages
         updateEmptySectionMessages();
@@ -983,6 +936,48 @@ function autoExpandTextarea(element) {
       text = text.replace(/(<li>.*?<\/li>)+/g, "<ul>$&</ul>");
 
       return text;
+    }
+
+    function updateSidebarItems() {
+      // This function used to update sidebar items to show they have content
+      // Now we'll just store the sections that have content, which might be useful for other functions
+      const sectionsWithContent = [];
+
+      const sectionsToUpdate = [
+        "jobDetails",
+        "requirements",
+        "preferredSkills",
+      ];
+
+      sectionsToUpdate.forEach((section) => {
+        // Check if the corresponding container has content
+        let hasContent = false;
+        if (
+          section === "jobDetails" &&
+          containers.tasks &&
+          containers.tasks.children.length > 0
+        ) {
+          hasContent = true;
+        } else if (
+          section === "requirements" &&
+          containers.requirements &&
+          containers.requirements.children.length > 0
+        ) {
+          hasContent = true;
+        } else if (
+          section === "preferredSkills" &&
+          containers.preferredSkills &&
+          containers.preferredSkills.children.length > 0
+        ) {
+          hasContent = true;
+        }
+
+        if (hasContent) {
+          sectionsWithContent.push(section);
+        }
+      });
+
+      return sectionsWithContent; // Return this in case we need it elsewhere
     }
 
     // Make some functions available globally so they can be called from auth and saved-jobs modules

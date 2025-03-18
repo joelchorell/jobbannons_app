@@ -64,6 +64,7 @@ a {
   text-decoration: none;
   color: var(--primary-color);
   transition: var(--transition);
+  cursor: pointer;
 }
 
 a:hover {
@@ -150,6 +151,7 @@ nav ul {
 .nav-link {
   color: var(--text-color);
   font-weight: 500;
+  cursor: pointer;
 }
 
 /* Buttons */
@@ -249,9 +251,11 @@ nav ul {
 .progress-bar {
   display: flex;
   justify-content: space-between;
-  margin-bottom: var(--spacing-xl);
+  margin: 2rem 0;
   position: relative;
-  padding: 0 var(--spacing-md);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .progress-bar::before {
@@ -529,32 +533,35 @@ select.form-control {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
+  width: 100%;
   background-color: var(--bg-white);
-  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   z-index: 100;
-  display: none;
+  display: block; /* Always display mobile nav */
 }
 
 .mobile-nav-items {
   display: flex;
   justify-content: space-around;
+  padding: var(--spacing-sm) 0;
 }
 
 .mobile-nav-item {
   flex: 1;
   text-align: center;
-  padding: var(--spacing-sm) 0;
-  position: relative;
 }
 
 .mobile-nav-link {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: var(--spacing-xs);
   color: var(--text-light);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
   transition: var(--transition);
+  position: relative;
+  cursor: pointer;
 }
 
 .mobile-nav-link.active {
@@ -584,74 +591,23 @@ select.form-control {
 
 /* Sidebar */
 .sidebar {
-  width: var(--sidebar-width);
-  background-color: var(--bg-white);
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  padding: var(--spacing-md);
-  position: sticky;
-  top: calc(var(--header-height) + var(--spacing-md));
-  height: calc(100vh - var(--header-height) - var(--spacing-md) * 2);
-  overflow-y: auto;
-  display: none;
+  display: none; /* Hide sidebar on all screen sizes */
 }
 
-.sidebar-items {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  padding: var(--spacing-md);
-  border-radius: var(--border-radius-sm);
-  color: var(--text-color);
-  transition: var(--transition);
-  cursor: pointer;
-}
-
-.sidebar-item:hover {
-  background-color: var(--bg-lighter);
-}
-
-.sidebar-item.active {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
-  font-weight: 500;
-}
-
-.sidebar-item.completed {
-  position: relative;
-}
-
-.sidebar-item.completed::after {
-  content: "✓";
-  position: absolute;
-  right: var(--spacing-md);
-  color: var(--success-color);
-  font-weight: bold;
-}
-
-.sidebar-icon {
-  margin-right: var(--spacing-md);
-  font-size: var(--font-size-lg);
-}
-
-.sidebar-footer {
-  margin-top: auto;
-  padding-top: var(--spacing-lg);
-}
-
-/* Content Area */
+/* Content area - now uses full width */
 .content-area {
-  flex: 1;
+  width: 100%;
+  position: relative;
+  padding-bottom: 80px; /* Add padding for mobile nav */
 }
 
 .section {
   display: none;
   animation: fadeIn 0.3s ease;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--spacing-lg);
 }
 
 .section.active {
@@ -741,6 +697,9 @@ select.form-control {
 .generated-content {
   margin-top: var(--spacing-xl);
   display: none;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .generated-content.visible {
@@ -1028,19 +987,28 @@ footer {
 /* Responsive */
 @media (min-width: 768px) {
   .app-layout {
-    flex-direction: row;
-  }
-
-  .sidebar {
-    display: block;
+    display: flex;
+    flex-direction: column; /* Column layout since we're not using sidebar */
+    gap: var(--spacing-md);
   }
 
   .content-area {
-    padding-left: var(--spacing-lg);
+    width: 100%;
+    padding-bottom: 80px; /* Maintain padding for mobile nav */
   }
 
-  .job-title-options {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  /* Make mobile nav look better on desktop */
+  .mobile-nav-items {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .mobile-nav-link {
+    font-size: var(--font-size-base);
+  }
+
+  .mobile-nav-icon {
+    font-size: calc(var(--font-size-xl) * 1.2);
   }
 }
 
@@ -1239,4 +1207,80 @@ footer {
 .saved-job-actions {
   display: flex;
   gap: var(--spacing-sm);
+}
+
+.desktop-only {
+  display: none;
+}
+
+/* Mobile step navigation - improved for all screen sizes */
+.mobile-step-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.mobile-step-nav button {
+  min-width: 120px;
+}
+
+/* Media queries for desktop improvements */
+@media (min-width: 992px) {
+  .desktop-only {
+    display: block;
+  }
+
+  /* Larger spacing and better typography for desktop */
+  .card-title {
+    font-size: 1.75rem;
+  }
+
+  .section {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  /* More elegant nav look on desktop */
+  .mobile-nav {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
+  .mobile-nav-items {
+    max-width: 800px;
+    padding: var(--spacing-md) 0;
+  }
+
+  /* Improved step nav on desktop */
+  .mobile-step-nav {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-md);
+  }
+
+  /* Ensure proper padding at the bottom to account for nav */
+  .app-container {
+    padding-bottom: 120px;
+  }
+}
+
+a,
+.btn,
+.nav-link,
+.tab-item,
+.mobile-tab,
+.sidebar-item,
+.checkbox-item label,
+.style-button,
+.reset-link,
+.next-step,
+.popup-close,
+.auth-tab,
+.mobile-nav-link {
+  cursor: pointer;
 }
