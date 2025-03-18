@@ -1,7 +1,8 @@
 // Initialize the Supabase client
-// Replace these with your actual Supabase credentials
-const supabaseUrl = "YOUR_SUPABASE_URL";
-const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+// Replace these with your actual Supabase credentials from your project settings
+// Found at: https://app.supabase.com/project/_/settings/api
+const supabaseUrl = "YOUR_SUPABASE_URL"; // e.g., "https://abcdefghijklmnopqrst.supabase.co"
+const supabaseKey = "YOUR_SUPABASE_ANON_KEY"; // Your project's anon/public key
 
 // Create a client
 let supabase;
