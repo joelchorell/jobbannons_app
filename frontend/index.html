@@ -36,7 +36,9 @@
             Spara tid och attrahera rätt kandidater med vår AI-drivna
             jobbannons-generator
           </p>
-          <a href="app.html" class="cta-button">Skapa din första annons</a>
+          <a href="#" class="cta-button" id="mainCTA"
+            >Skapa din första annons</a
+          >
         </div>
         <div class="hero-image">
           <img src="https://via.placeholder.com/600x400" alt="JobbAI demo" />
@@ -131,7 +133,7 @@
               <li>Grundläggande funktioner</li>
               <li>Begränsad redigering</li>
             </ul>
-            <a href="app.html" class="cta-button">Kom igång</a>
+            <a href="#" class="cta-button" id="freeCTA">Kom igång</a>
           </div>
           <div class="pricing-card featured">
             <div class="popular-tag">Populärast</div>
@@ -143,7 +145,9 @@
               <li>Prioriterad support</li>
               <li>Spara och redigera annonser</li>
             </ul>
-            <a href="app.html" class="cta-button">Prova gratis i 7 dagar</a>
+            <a href="#" class="cta-button" id="premiumCTA"
+              >Prova gratis i 7 dagar</a
+            >
           </div>
           <div class="pricing-card">
             <h3>Företag</h3>
@@ -164,7 +168,9 @@
       <div class="container">
         <h2>Redo att skapa din första jobbannons?</h2>
         <p>Kom igång på mindre än en minut - inga kreditkort krävs</p>
-        <a href="app.html" class="cta-button large">Skapa din första annons</a>
+        <a href="#" class="cta-button large" id="bottomCTA"
+          >Skapa din första annons</a
+        >
       </div>
     </section>
 
@@ -212,5 +218,54 @@
         </div>
       </div>
     </footer>
+
+    <!-- Add authentication check for CTA buttons -->
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+      // Initialize Supabase (using the same config as in your supabase.js)
+      const supabaseUrl = "YOUR_SUPABASE_URL"; // Replace with your actual URL
+      const supabaseKey = "YOUR_SUPABASE_ANON_KEY"; // Replace with your actual key
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      // Function to check if user is authenticated
+      async function checkAuth() {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        return !!session;
+      }
+
+      // Handle CTA button clicks
+      async function handleCTAClick(e) {
+        e.preventDefault();
+
+        const isAuthenticated = await checkAuth();
+
+        if (isAuthenticated) {
+          // Redirect to app if authenticated
+          window.location.href = "app.html";
+        } else {
+          // Show login popup if not authenticated
+          window.location.href = "login.html"; // We'll create this page next
+        }
+      }
+
+      // Add click handlers to all CTA buttons
+      document.addEventListener("DOMContentLoaded", function () {
+        const ctaButtons = [
+          document.getElementById("mainCTA"),
+          document.getElementById("freeCTA"),
+          document.getElementById("premiumCTA"),
+          document.getElementById("bottomCTA"),
+        ];
+
+        ctaButtons.forEach((button) => {
+          if (button) {
+            button.addEventListener("click", handleCTAClick);
+          }
+        });
+      });
+    </script>
   </body>
 </html>

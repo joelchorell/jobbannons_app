@@ -594,6 +594,30 @@
 
     <script src="script.js"></script>
 
+    <!-- Auth check to prevent unauthorized access -->
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+      // Initialize Supabase with the same config
+      const supabaseUrl = "YOUR_SUPABASE_URL"; // Replace with actual URL
+      const supabaseKey = "YOUR_SUPABASE_ANON_KEY"; // Replace with actual key
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      // Check if user is authenticated
+      async function checkAuth() {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) {
+          // Redirect to login if not authenticated
+          window.location.href = "login.html";
+        }
+      }
+
+      // Run auth check
+      checkAuth();
+    </script>
+
     <!-- Auth and saved jobs modules -->
     <script type="module" src="js/supabase.js"></script>
     <script type="module" src="js/auth.js"></script>

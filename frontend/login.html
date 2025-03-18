@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Logga in | JobbAI</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .login-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+      }
+
+      .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .login-header h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .login-header p {
+        color: var(--text-light);
+      }
+
+      .card {
+        margin-bottom: 2rem;
+      }
+
+      .auth-forms {
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <a href="index.html" class="logo">JobbAI</a>
+        <nav>
+          <ul>
+            <li>
+              <a href="index.html" class="nav-link">Tillbaka till startsidan</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="app-container">
+      <div class="container">
+        <div class="login-container">
+          <div class="login-header">
+            <h1>Logga in för att fortsätta</h1>
+            <p>
+              Skapa ett konto eller logga in för att börja skapa jobbannonser
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Logga in</div>
+                <div class="auth-tab" data-tab="register">Skapa konto</div>
+              </div>
+
+              <div class="auth-forms">
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active">
+                  <div class="form-group">
+                    <label class="form-label">E-post</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="loginEmail"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Lösenord</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="loginPassword"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <a href="#" id="forgotPassword" class="form-text"
+                      >Glömt lösenord?</a
+                    >
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-block">
+                    Logga in
+                  </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form" style="display: none">
+                  <div class="form-group">
+                    <label class="form-label">Namn</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="registerName"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">E-post</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="registerEmail"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Företag</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="registerCompany"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Lösenord</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="registerPassword"
+                      required
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-block">
+                    Skapa konto
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="errorMessage"
+            class="error-message"
+            style="display: none"
+          ></div>
+          <div
+            id="successMessage"
+            class="success-message"
+            style="display: none"
+          >
+            <div class="success-icon">✓</div>
+            <div class="success-text">
+              <p id="successText"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div>
+            <div class="footer-logo">JobbAI</div>
+            <p>Skapa professionella jobbannonser med AI</p>
+          </div>
+          <div class="footer-links">
+            <div class="footer-column">
+              <h4>Produkt</h4>
+              <ul>
+                <li><a href="index.html#features">Funktioner</a></li>
+                <li><a href="index.html#pricing">Priser</a></li>
+              </ul>
+            </div>
+            <div class="footer-column">
+              <h4>Företag</h4>
+              <ul>
+                <li><a href="#">Om oss</a></li>
+                <li><a href="#">Kontakt</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 JobbAI. Alla rättigheter förbehållna.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner"></div>
+      <p class="loading-text">Loggar in...</p>
+    </div>
+
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+      // Initialize Supabase (using the same config as in your supabase.js)
+      const supabaseUrl = "YOUR_SUPABASE_URL"; // Replace with your actual URL
+      const supabaseKey = "YOUR_SUPABASE_ANON_KEY"; // Replace with your actual key
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      // DOM elements
+      const authTabs = document.querySelectorAll(".auth-tab");
+      const authForms = document.querySelectorAll(".auth-form");
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
+      const forgotPasswordLink = document.getElementById("forgotPassword");
+      const errorMessage = document.getElementById("errorMessage");
+      const successMessage = document.getElementById("successMessage");
+      const successText = document.getElementById("successText");
+      const loadingOverlay = document.getElementById("loadingOverlay");
+
+      // Switch between login and register tabs
+      authTabs.forEach((tab) => {
+        tab.addEventListener("click", function () {
+          const tabId = this.getAttribute("data-tab");
+
+          // Update active tab
+          authTabs.forEach((t) => t.classList.remove("active"));
+          this.classList.add("active");
+
+          // Show corresponding form
+          authForms.forEach((form) => {
+            form.style.display = "none";
+          });
+          document.getElementById(`${tabId}Form`).style.display = "block";
+        });
+      });
+
+      // Login form submission
+      loginForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+
+        try {
+          showLoadingOverlay("Loggar in...");
+          hideMessages();
+
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+          if (error) throw error;
+
+          // Redirect to app page on successful login
+          window.location.href = "app.html";
+        } catch (error) {
+          showError(`Inloggningen misslyckades: ${error.message}`);
+          hideLoadingOverlay();
+        }
+      });
+
+      // Register form submission
+      registerForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("registerName").value;
+        const email = document.getElementById("registerEmail").value;
+        const company = document.getElementById("registerCompany").value;
+        const password = document.getElementById("registerPassword").value;
+
+        try {
+          showLoadingOverlay("Skapar konto...");
+          hideMessages();
+
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: { name, company },
+            },
+          });
+
+          if (error) throw error;
+
+          // Create a profile for the user
+          if (data?.user) {
+            try {
+              const { error: profileError } = await supabase
+                .from("profiles")
+                .insert([
+                  {
+                    id: data.user.id,
+                    name,
+                    company,
+                    subscription_tier: "free",
+                  },
+                ]);
+
+              if (profileError)
+                console.error("Error creating profile:", profileError);
+            } catch (profileError) {
+              console.error("Error creating profile:", profileError);
+            }
+          }
+
+          hideLoadingOverlay();
+          showSuccess(
+            "Konto skapat! Kontrollera din e-post för verifieringslänk."
+          );
+
+          // Switch back to login tab
+          document.querySelector('.auth-tab[data-tab="login"]').click();
+        } catch (error) {
+          showError(`Registreringen misslyckades: ${error.message}`);
+          hideLoadingOverlay();
+        }
+      });
+
+      // Forgot password functionality
+      forgotPasswordLink.addEventListener("click", async function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById("loginEmail").value;
+        if (!email) {
+          showError("Vänligen ange din e-postadress först");
+          return;
+        }
+
+        try {
+          showLoadingOverlay("Skickar återställningslänk...");
+          hideMessages();
+
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/reset-password.html`,
+          });
+
+          if (error) throw error;
+
+          hideLoadingOverlay();
+          showSuccess("En återställningslänk har skickats till din e-post");
+        } catch (error) {
+          showError(`Kunde inte skicka återställningslänk: ${error.message}`);
+          hideLoadingOverlay();
+        }
+      });
+
+      // Helper functions
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = "block";
+        successMessage.style.display = "none";
+      }
+
+      function showSuccess(message) {
+        successText.textContent = message;
+        successMessage.style.display = "flex";
+        errorMessage.style.display = "none";
+      }
+
+      function hideMessages() {
+        errorMessage.style.display = "none";
+        successMessage.style.display = "none";
+      }
+
+      function showLoadingOverlay(message = "Laddar...") {
+        const loadingText = loadingOverlay.querySelector(".loading-text");
+        if (loadingText) {
+          loadingText.textContent = message;
+        }
+        loadingOverlay.classList.add("visible");
+      }
+
+      function hideLoadingOverlay() {
+        loadingOverlay.classList.remove("visible");
+      }
+
+      // Check if already logged in
+      async function checkAuth() {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session) {
+          // Redirect to app if already logged in
+          window.location.href = "app.html";
+        }
+      }
+
+      // Run on page load
+      checkAuth();
+    </script>
+  </body>
+</html>
