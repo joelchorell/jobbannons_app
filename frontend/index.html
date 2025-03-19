@@ -14,6 +14,7 @@
     />
   </head>
   <body>
+    <!-- Regular header with navigation -->
     <header>
       <div class="container">
         <div class="logo">JobbAI</div>
@@ -23,25 +24,79 @@
             <li><a href="#how-it-works">Hur det fungerar</a></li>
             <li><a href="#pricing">Priser</a></li>
             <li><a href="app.html" class="cta-button">Skapa annons</a></li>
+            <li>
+              <a href="#" id="headerLoginBtn" class="btn-login">Logga in</a>
+            </li>
           </ul>
         </nav>
       </div>
     </header>
 
+    <!-- Sticky navigation for mobile - only shows on scroll -->
+    <div class="sticky-nav">
+      <a href="app.html" class="cta-button">Skapa annons</a>
+      <a href="#" id="mobileLoginBtn" class="btn-login">Logga in</a>
+    </div>
+
     <section class="hero">
+      <div class="hero-decoration">
+        <div class="circle-1"></div>
+        <div class="circle-2"></div>
+        <div class="triangle"></div>
+        <div class="square"></div>
+        <div class="pentagon"></div>
+        <div class="bright-star bright-star-1"></div>
+        <div class="bright-star bright-star-2"></div>
+        <div class="bright-star bright-star-3"></div>
+        <div class="bright-star bright-star-4"></div>
+        <div class="bright-star bright-star-5"></div>
+        <div class="shooting-star-1"></div>
+        <div class="shooting-star-2"></div>
+      </div>
       <div class="container">
+        <div class="shooting-star-3"></div>
         <div class="hero-content">
-          <h1>Skapa professionella jobbannonser med AI</h1>
+          <h1>
+            Skapa professionella jobbannonser med
+            <span class="highlight-ai">AI</span>
+          </h1>
           <p>
             Spara tid och attrahera rätt kandidater med vår AI-drivna
             jobbannons-generator
           </p>
-          <a href="#" class="cta-button" id="mainCTA"
+          <a href="app.html" class="cta-button" id="mainCTA"
             >Skapa din första annons</a
           >
         </div>
         <div class="hero-image">
-          <img src="https://via.placeholder.com/600x400" alt="JobbAI demo" />
+          <div class="app-mockup">
+            <div class="mockup-content">
+              <div class="mockup-sidebar">
+                <div class="mockup-nav-item active"></div>
+                <div class="mockup-nav-item"></div>
+                <div class="mockup-nav-item"></div>
+                <div class="mockup-nav-item"></div>
+              </div>
+              <div class="mockup-main">
+                <div class="mockup-form">
+                  <div class="mockup-input-group">
+                    <div class="mockup-label"></div>
+                    <div class="mockup-input"></div>
+                  </div>
+                  <div class="mockup-input-group">
+                    <div class="mockup-label"></div>
+                    <div class="mockup-textarea"></div>
+                  </div>
+                  <div class="mockup-checkboxes">
+                    <div class="mockup-checkbox"></div>
+                    <div class="mockup-checkbox"></div>
+                    <div class="mockup-checkbox"></div>
+                  </div>
+                  <div class="mockup-button"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -133,7 +188,7 @@
               <li>Grundläggande funktioner</li>
               <li>Begränsad redigering</li>
             </ul>
-            <a href="#" class="cta-button" id="freeCTA">Kom igång</a>
+            <a href="app.html" class="cta-button" id="freeCTA">Kom igång</a>
           </div>
           <div class="pricing-card featured">
             <div class="popular-tag">Populärast</div>
@@ -145,7 +200,7 @@
               <li>Prioriterad support</li>
               <li>Spara och redigera annonser</li>
             </ul>
-            <a href="#" class="cta-button" id="premiumCTA"
+            <a href="app.html" class="cta-button" id="premiumCTA"
               >Prova gratis i 7 dagar</a
             >
           </div>
@@ -168,7 +223,7 @@
       <div class="container">
         <h2>Redo att skapa din första jobbannons?</h2>
         <p>Kom igång på mindre än en minut - inga kreditkort krävs</p>
-        <a href="#" class="cta-button large" id="bottomCTA"
+        <a href="app.html" class="cta-button large" id="bottomCTA"
           >Skapa din första annons</a
         >
       </div>
@@ -219,53 +274,85 @@
       </div>
     </footer>
 
-    <!-- Add authentication check for CTA buttons -->
-    <script type="module">
-      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    <!-- Login Popup -->
+    <div class="popup" id="loginPopup">
+      <div class="popup-content">
+        <span class="popup-close">&times;</span>
+        <h3 class="popup-title">Logga in på JobbAI</h3>
 
-      // Initialize Supabase (using the same config as in your supabase.js)
-      const supabaseUrl = "YOUR_SUPABASE_URL"; // Replace with your actual URL
-      const supabaseKey = "YOUR_SUPABASE_ANON_KEY"; // Replace with your actual key
-      const supabase = createClient(supabaseUrl, supabaseKey);
+        <div class="auth-tabs">
+          <div class="auth-tab active" data-tab="login">Logga in</div>
+          <div class="auth-tab" data-tab="register">Skapa konto</div>
+        </div>
 
-      // Function to check if user is authenticated
-      async function checkAuth() {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        return !!session;
-      }
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form active">
+          <div class="form-group">
+            <label class="form-label">E-post</label>
+            <input type="email" class="form-control" id="loginEmail" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lösenord</label>
+            <input
+              type="password"
+              class="form-control"
+              id="loginPassword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <a href="#" id="forgotPassword" class="form-text"
+              >Glömt lösenord?</a
+            >
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            Logga in
+          </button>
+        </form>
 
-      // Handle CTA button clicks
-      async function handleCTAClick(e) {
-        e.preventDefault();
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form" style="display: none">
+          <div class="form-group">
+            <label class="form-label">Namn</label>
+            <input
+              type="text"
+              class="form-control"
+              id="registerName"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-post</label>
+            <input
+              type="email"
+              class="form-control"
+              id="registerEmail"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Företag</label>
+            <input type="text" class="form-control" id="registerCompany" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lösenord</label>
+            <input
+              type="password"
+              class="form-control"
+              id="registerPassword"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            Skapa konto
+          </button>
+        </form>
+      </div>
+    </div>
 
-        const isAuthenticated = await checkAuth();
-
-        if (isAuthenticated) {
-          // Redirect to app if authenticated
-          window.location.href = "app.html";
-        } else {
-          // Show login popup if not authenticated
-          window.location.href = "login.html"; // We'll create this page next
-        }
-      }
-
-      // Add click handlers to all CTA buttons
-      document.addEventListener("DOMContentLoaded", function () {
-        const ctaButtons = [
-          document.getElementById("mainCTA"),
-          document.getElementById("freeCTA"),
-          document.getElementById("premiumCTA"),
-          document.getElementById("bottomCTA"),
-        ];
-
-        ctaButtons.forEach((button) => {
-          if (button) {
-            button.addEventListener("click", handleCTAClick);
-          }
-        });
-      });
-    </script>
+    <!-- Load JavaScript files -->
+    <script src="js/sticky-nav.js"></script>
+    <script src="js/app-interactions.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

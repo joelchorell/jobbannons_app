@@ -96,6 +96,18 @@ function autoExpandTextarea(element) {
     // Setup add item handlers
     setupAddItemHandlers();
 
+    // Handle login button click
+    const loginButton = document.getElementById("loginButton");
+    if (loginButton) {
+      loginButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        const loginPopup = document.getElementById("loginPopup");
+        if (loginPopup) {
+          loginPopup.classList.add("visible");
+        }
+      });
+    }
+
     // Functions
 
     function initMobileNavigation() {
