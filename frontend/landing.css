@@ -48,12 +48,20 @@ ul {
 
 /* Header */
 header {
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: rgba(10, 10, 30, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.3s;
+}
+
+header:hover {
+  background-color: rgba(10, 10, 30, 0.4);
 }
 
 header .container {
@@ -66,7 +74,8 @@ header .container {
 .logo {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 nav ul {
@@ -76,8 +85,11 @@ nav ul {
 }
 
 nav a {
-  font-weight: 500;
-  transition: var(--transition);
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  margin-left: 1.5rem;
+  transition: color 0.2s;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 nav a:hover {
@@ -116,14 +128,11 @@ nav a:hover {
 
 /* Hero Section */
 .hero {
-  padding: 5rem 0;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(
-    135deg,
-    var(--gradient-start),
-    var(--gradient-end)
-  );
+  background-color: var(--gradient-start);
+  min-height: 85vh;
+  padding-top: 80px;
 }
 
 /* Add starry night effect */
@@ -430,6 +439,7 @@ nav a:hover {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   transform: perspective(1000px) rotateY(-5deg);
   transition: transform 0.5s ease;
+  margin-top: 30px;
 }
 
 .hero-image::before {
@@ -694,13 +704,16 @@ footer {
 /* Responsive */
 @media (max-width: 768px) {
   .hero .container {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-content {
+    flex-direction: column;
     text-align: center;
   }
-
+  .hero-content {
+    margin-bottom: 2rem;
+  }
+  .app-mockup {
+    margin-top: 10px;
+    height: 320px;
+  }
   nav ul {
     gap: 1rem;
   }
@@ -715,6 +728,15 @@ footer {
   }
 }
 
+@media (min-width: 769px) {
+  .hero {
+    padding-top: 100px;
+  }
+  .hero-image {
+    margin-top: 30px;
+  }
+}
+
 /* Mobile-specific improvements */
 @media (max-width: 768px) {
   /* Make header static position */
@@ -726,22 +748,23 @@ footer {
   .sticky-nav {
     position: fixed;
     top: 0;
-    right: 0;
     left: 0;
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    padding: 0.75rem 1.25rem;
-    z-index: 100;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    display: none; /* Still hidden by default, becomes visible when scrolled */
-    justify-content: flex-end;
-    gap: 1rem;
-    transition: opacity 0.3s ease;
+    width: 100%;
+    z-index: 1000;
+    background-color: rgba(10, 10, 30, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease, background-color 0.3s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Show sticky nav when it has the visible class */
-  .sticky-nav.visible {
-    display: flex;
+  .sticky-nav:hover {
+    background-color: rgba(10, 10, 30, 0.4);
   }
 
   /* Match buttons styling */
@@ -1030,9 +1053,9 @@ footer {
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   height: 370px;
+  margin-top: 20px;
   position: relative;
-  animation: none;
-  transform: none;
+  z-index: 2;
 }
 
 .mockup-header {
@@ -1383,4 +1406,44 @@ footer {
 /* Sticky navigation - hidden by default on all screens */
 .sticky-nav {
   display: none;
+}
+
+/* Highlight AI text in title */
+.highlight-ai {
+  position: relative;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+/* Remove the purple background effect completely */
+.highlight-ai::before {
+  display: none;
+}
+
+/* App Mockup Styling - with more specificity to override any other styles */
+.hero-image .app-mockup {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  height: 370px;
+  margin-top: 20px;
+  position: relative;
+  z-index: 2;
+  border: none !important;
+}
+
+/* Make the content elements transparent as well */
+.hero-image .mockup-sidebar {
+  width: 70px;
+  background: rgba(247, 248, 252, 0.8) !important;
+  padding: 20px 15px;
+  border-right: 1px solid rgba(234, 237, 243, 0.5);
+}
+
+.hero-image .mockup-main {
+  flex-grow: 1;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.8) !important;
+  overflow: hidden;
 }

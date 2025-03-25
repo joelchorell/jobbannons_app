@@ -538,6 +538,7 @@ select.form-control {
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   z-index: 100;
   display: block; /* Always display mobile nav */
+  height: auto; /* Let it size to content */
 }
 
 .mobile-nav-items {
@@ -555,13 +556,16 @@ select.form-control {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--spacing-xs);
+  padding: 8px var(--spacing-xs);
   color: var(--text-light);
   font-size: var(--font-size-sm);
   font-weight: 500;
   transition: var(--transition);
   position: relative;
   cursor: pointer;
+  /* Add fixed height to prevent jumping */
+  height: 100%;
+  justify-content: flex-start;
 }
 
 .mobile-nav-link.active {
@@ -581,7 +585,7 @@ select.form-control {
 
 .mobile-nav-icon {
   font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
   transition: var(--transition);
 }
 
@@ -1013,83 +1017,194 @@ footer {
 }
 
 @media (max-width: 767px) {
-  .progress-label {
+  /* Ensure footer is hidden on app page mobile */
+  body.app-page footer {
+    display: none !important;
+  }
+
+  /* Fix step navigation on mobile - keep it visible */
+  .mobile-step-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding: 0.5rem;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 101; /* Higher than mobile-nav */
+    margin: 0;
+    border-radius: 0;
+    display: flex;
+  }
+
+  /* Adjust position of mobile-nav to make room for step buttons */
+  .mobile-nav {
     display: none;
   }
 
-  .progress-step {
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
+  /* Reduce content padding since we don't need space for mobile-nav */
+  .content-area {
+    padding-bottom: 60px; /* Just enough for step buttons */
   }
 
+  body.app-page .section {
+    max-height: calc(100vh - 11rem);
+    padding-bottom: 60px; /* Space for the fixed step navigation */
+  }
+
+  /* Make better use of space */
   .progress-bar {
-    margin-bottom: var(--spacing-md);
+    margin: 1rem 0;
+    padding: 0;
   }
 
-  .mobile-nav {
-    display: block;
+  .progress-step {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+    margin: 0 0.25rem;
   }
 
-  .mobile-nav-item {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .mobile-nav-link.active::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    background-color: var(--primary-light);
-    z-index: -1;
+  .progress-label {
+    font-size: 0.7rem;
+    margin-top: 0.25rem;
   }
 
   .app-container {
-    padding-bottom: 60px; /* Space for mobile nav */
+    padding: 0.5rem 0 4rem;
   }
 
-  .tabs {
-    margin: 0 -1rem;
-    padding: 0 1rem;
+  .app-container h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .app-container .subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .content-area {
+    padding-bottom: 60px; /* Reduce padding */
   }
 
   .card {
-    padding: var(--spacing-md);
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+  }
+
+  .card-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .card-body {
+    padding: 0.75rem 1rem;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+
+  .form-label {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
   }
 
   .form-control {
-    padding: var(--spacing-sm);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
   }
 
-  .style-buttons {
-    justify-content: center;
+  textarea.form-control {
+    min-height: 4rem; /* Reduce textarea height */
   }
 
-  .footer-content {
-    flex-direction: column;
-    gap: var(--spacing-lg);
-  }
-
-  .footer-links {
-    flex-direction: column;
-    gap: var(--spacing-lg);
-  }
-
-  /* Mobile step navigation */
+  /* Optimize step navigation to always be visible */
   .mobile-step-nav {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem 0;
-    margin-top: 1rem;
-    border-top: 1px solid var(--border-color);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding: 0.5rem;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    margin: 0;
   }
 
   .mobile-step-nav button {
-    min-width: 120px; /* Set a minimum width for both buttons */
-    justify-content: center; /* Center the text */
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* Optimize mobile tabs */
+  .mobile-tabs {
+    padding: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .mobile-tab {
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  /* Reduce margins and padding for checkbox items */
+  .checkbox-item {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Make the form areas more compact */
+  p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  /* More compact nav */
+  .mobile-nav {
+    height: 3.5rem;
+  }
+
+  .mobile-nav-icon {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .mobile-nav-items {
+    height: 100%;
+  }
+
+  .mobile-nav-link {
+    padding: 0.25rem 0;
+    font-size: 0.75rem;
+  }
+
+  /* Add a bit more space above the first section for mobile header */
+  section:first-of-type {
+    margin-top: 0.5rem;
+  }
+
+  /* Make the add item containers more compact */
+  .add-item-container {
+    gap: 0.5rem;
+  }
+
+  .add-item-container .btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  /* Make empty section messages smaller */
+  .empty-section-message {
+    padding: 0.75rem;
+  }
+
+  .empty-section-message p {
+    font-size: 0.85rem;
   }
 }
 
@@ -1213,7 +1328,7 @@ footer {
   display: none;
 }
 
-/* Mobile step navigation - improved for all screen sizes */
+/* Mobile step navigation - fixed at bottom */
 .mobile-step-nav {
   display: flex;
   justify-content: space-between;
@@ -1234,38 +1349,74 @@ footer {
     display: block;
   }
 
-  /* Larger spacing and better typography for desktop */
-  .card-title {
-    font-size: 1.75rem;
-  }
-
-  .section {
-    margin-bottom: var(--spacing-xl);
-  }
-
-  /* More elegant nav look on desktop */
+  /* Improved navigation for desktop */
   .mobile-nav {
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    height: auto; /* Auto height */
+    min-height: 75px; /* Minimum height */
+    padding: 5px 0;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
   }
 
   .mobile-nav-items {
+    justify-content: center;
     max-width: 800px;
-    padding: var(--spacing-md) 0;
+    margin: 0 auto;
   }
 
-  /* Improved step nav on desktop */
-  .mobile-step-nav {
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: var(--spacing-xl);
-    padding: var(--spacing-md);
+  .mobile-nav-item {
+    padding: 0;
+    margin: 0 20px;
+    min-width: 80px; /* Ensure minimum width */
   }
 
-  /* Ensure proper padding at the bottom to account for nav */
+  .mobile-nav-link {
+    padding: 10px 0 15px 0; /* More padding top and bottom */
+    font-size: 0.95rem; /* Larger font size */
+    line-height: 1.2; /* Better line height */
+    height: 100%;
+    text-align: center; /* Center text */
+    justify-content: flex-start;
+  }
+
+  .mobile-nav-icon {
+    font-size: 1.6rem; /* Larger icons */
+    margin-bottom: 8px; /* More space between icon and text */
+    display: block; /* Ensure block display */
+  }
+
+  /* Enhanced active state */
+  .mobile-nav-link.active {
+    color: var(--primary-color);
+    font-weight: 600;
+    position: relative;
+  }
+
+  .mobile-nav-link.active .mobile-nav-icon {
+    transform: scale(1.1);
+  }
+
+  .mobile-nav-link.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 15%;
+    width: 70%; /* Wider indicator */
+    height: 4px; /* Thicker indicator */
+    background-color: var(--primary-color);
+    border-radius: 3px 3px 0 0;
+  }
+
+  /* Content adjustments */
+  .content-area {
+    padding-bottom: 90px; /* More padding for taller nav */
+  }
+
+  body.app-page .section {
+    margin-bottom: var(--spacing-md);
+  }
+
   .app-container {
-    padding-bottom: 120px;
+    padding-bottom: 90px;
   }
 }
 
@@ -1283,4 +1434,11 @@ a,
 .auth-tab,
 .mobile-nav-link {
   cursor: pointer;
+}
+
+/* App-specific body class */
+body.app-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
