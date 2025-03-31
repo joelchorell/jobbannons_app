@@ -159,7 +159,7 @@ def regenerate_style():
         """
         
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "Du är en skicklig rekryterare som kan anpassa tonen i jobbannonser."},
                 {"role": "user", "content": prompt}
